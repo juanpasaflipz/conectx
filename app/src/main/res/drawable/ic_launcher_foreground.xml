@@ -4,8 +4,62 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Simple "C" letter for Conectx -->
-    <path
-        android:fillColor="#6C63FF"
-        android:pathData="M54,28 C40.745,28 30,38.745 30,52 C30,65.255 40.745,76 54,76 C61.18,76 67.6,72.8 72,67.8 L66,62.4 C63,66 58.8,68 54,68 C45.163,68 38,60.837 38,52 C38,43.163 45.163,36 54,36 C58.8,36 63,38 66,41.6 L72,36.2 C67.6,31.2 61.18,28 54,28 Z" />
+
+    <!-- Mesh network nodes - outer ring (light green, semi-transparent) -->
+    <path android:fillColor="#A9DFBF" android:fillAlpha="0.5"
+        android:pathData="M54,26m-3.5,0a3.5,3.5 0,1 1,7 0a3.5,3.5 0,1 1,-7 0" />
+    <path android:fillColor="#A9DFBF" android:fillAlpha="0.5"
+        android:pathData="M81,41m-3.5,0a3.5,3.5 0,1 1,7 0a3.5,3.5 0,1 1,-7 0" />
+    <path android:fillColor="#A9DFBF" android:fillAlpha="0.5"
+        android:pathData="M85,70m-3.5,0a3.5,3.5 0,1 1,7 0a3.5,3.5 0,1 1,-7 0" />
+    <path android:fillColor="#A9DFBF" android:fillAlpha="0.5"
+        android:pathData="M65,86m-3.5,0a3.5,3.5 0,1 1,7 0a3.5,3.5 0,1 1,-7 0" />
+    <path android:fillColor="#A9DFBF" android:fillAlpha="0.5"
+        android:pathData="M37,82m-3.5,0a3.5,3.5 0,1 1,7 0a3.5,3.5 0,1 1,-7 0" />
+    <path android:fillColor="#A9DFBF" android:fillAlpha="0.5"
+        android:pathData="M26,56m-3.5,0a3.5,3.5 0,1 1,7 0a3.5,3.5 0,1 1,-7 0" />
+
+    <!-- Mesh lines - nodes to center -->
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.25" android:strokeWidth="0.6"
+        android:pathData="M54,26L54,47" />
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.25" android:strokeWidth="0.6"
+        android:pathData="M81,41L63,49" />
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.25" android:strokeWidth="0.6"
+        android:pathData="M85,70L65,61" />
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.25" android:strokeWidth="0.6"
+        android:pathData="M65,86L59,65" />
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.25" android:strokeWidth="0.6"
+        android:pathData="M37,82L49,63" />
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.25" android:strokeWidth="0.6"
+        android:pathData="M26,56L44,55" />
+
+    <!-- Mesh lines - between outer nodes -->
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.12" android:strokeWidth="0.4"
+        android:pathData="M54,26L81,41" />
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.12" android:strokeWidth="0.4"
+        android:pathData="M81,41L85,70" />
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.12" android:strokeWidth="0.4"
+        android:pathData="M85,70L65,86" />
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.12" android:strokeWidth="0.4"
+        android:pathData="M65,86L37,82" />
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.12" android:strokeWidth="0.4"
+        android:pathData="M37,82L26,56" />
+    <path android:strokeColor="#A9DFBF" android:strokeAlpha="0.12" android:strokeWidth="0.4"
+        android:pathData="M26,56L54,26" />
+
+    <!-- Gold X - the main mark -->
+    <path android:strokeColor="#F4D03F" android:strokeWidth="5.5" android:strokeLineCap="round"
+        android:pathData="M41,42L67,68" />
+    <path android:strokeColor="#F4D03F" android:strokeWidth="5.5" android:strokeLineCap="round"
+        android:pathData="M67,42L41,68" />
+
+    <!-- Gold dots at X endpoints -->
+    <path android:fillColor="#F4D03F" android:fillAlpha="0.85"
+        android:pathData="M41,42m-1.8,0a1.8,1.8 0,1 1,3.6 0a1.8,1.8 0,1 1,-3.6 0" />
+    <path android:fillColor="#F4D03F" android:fillAlpha="0.85"
+        android:pathData="M67,42m-1.8,0a1.8,1.8 0,1 1,3.6 0a1.8,1.8 0,1 1,-3.6 0" />
+    <path android:fillColor="#F4D03F" android:fillAlpha="0.85"
+        android:pathData="M41,68m-1.8,0a1.8,1.8 0,1 1,3.6 0a1.8,1.8 0,1 1,-3.6 0" />
+    <path android:fillColor="#F4D03F" android:fillAlpha="0.85"
+        android:pathData="M67,68m-1.8,0a1.8,1.8 0,1 1,3.6 0a1.8,1.8 0,1 1,-3.6 0" />
 </vector>

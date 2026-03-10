@@ -18,7 +18,7 @@
     <string name="activation_username_hint">Nombre de usuario</string>
     <string name="activation_username_placeholder">Como te conocen tus amigos</string>
     <string name="activation_button">Activar</string>
-    <string name="activation_pricing_info">Pase Mundial $199 MXN · Pase por Partido $39 MXN\nCompra tu pase en conectx.app</string>
+    <string name="activation_pricing_info">Pase Mundial $199 MXN (acceso hasta julio 2026) · Pase por Partido $39 MXN\nCompra tu pase en conectx.app</string>
     <string name="activation_error_code">Ingresa un codigo de activacion</string>
     <string name="activation_error_username">Elige un nombre de usuario</string>
     <string name="activation_error_network">Sin conexion a internet. Intentalo de nuevo.</string>

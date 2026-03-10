@@ -22,9 +22,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * Represents a squad member's latest known location.
- */
+/** UI model for a squad member's last-known location. */
 data class MemberLocation(
     val authorId: String,
     val authorName: String,
@@ -35,14 +33,13 @@ data class MemberLocation(
 @HiltViewModel
 class LocationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val syncRecordDao: SyncRecordDao,
     private val syncEngine: SyncEngine,
-    @ApplicationContext private val appContext: Context
+    private val syncRecordDao: SyncRecordDao,
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val squadId: String = checkNotNull(savedStateHandle["squadId"])
 
-    // ── Form state ──────────────────────────────────────────────────
     private val _section = MutableStateFlow("")
     val section: StateFlow<String> = _section.asStateFlow()
 
@@ -58,32 +55,29 @@ class LocationViewModel @Inject constructor(
     private val _shared = MutableStateFlow(false)
     val shared: StateFlow<Boolean> = _shared.asStateFlow()
 
-    // ── Squad member locations ──────────────────────────────────────
-    // Decode all LOCATION sync records, keep only the latest per author.
+    /**
+     * Reactive stream of squad members' latest location pings.
+     * De-duplicates by authorId so only the most recent ping per member shows.
+     */
     val memberLocations: StateFlow<List<MemberLocation>> = syncRecordDao
         .getLocationPingsForSquad(squadId)
         .map { records ->
             records
-                .mapNotNull { entity ->
-                    try {
-                        val payload = PayloadCodec.decodeLocation(entity.payload)
-                        MemberLocation(
-                            authorId = entity.authorId,
-                            authorName = payload.authorName,
-                            ping = payload.ping,
-                            timestamp = entity.timestamp
-                        )
-                    } catch (_: Exception) {
-                        null // skip malformed records
-                    }
-                }
-                // Group by author and keep only the most recent ping
+                .filter { it.authorId != syncEngine.localUserId }
                 .groupBy { it.authorId }
-                .map { (_, pings) -> pings.first() } // already sorted DESC by lamportClock
+                .mapNotNull { (authorId, recs) ->
+                    val latest = recs.maxByOrNull { it.lamportClock } ?: return@mapNotNull null
+                    val payload = PayloadCodec.decodeLocation(latest.payload)
+                    MemberLocation(
+                        authorId = authorId,
+                        authorName = payload.authorName,
+                        ping = payload.ping,
+                        timestamp = latest.timestamp
+                    )
+                }
+                .sortedByDescending { it.timestamp }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
-
-    // ── Actions ─────────────────────────────────────────────────────
 
     fun updateSection(value: String) { _section.value = value }
     fun updateRow(value: String) { _row.value = value }
@@ -91,12 +85,9 @@ class LocationViewModel @Inject constructor(
     fun updateNote(value: String) { _note.value = value }
 
     fun shareLocation() {
-        val sectionVal = _section.value.trim()
-        if (sectionVal.isBlank()) return
-
         viewModelScope.launch {
             val ping = LocationPing(
-                section = sectionVal,
+                section = _section.value.trim(),
                 row = _row.value.trim().ifEmpty { null },
                 seat = _seat.value.trim().ifEmpty { null },
                 note = _note.value.trim().ifEmpty { null },
@@ -112,10 +103,9 @@ class LocationViewModel @Inject constructor(
     }
 
     private fun getBatteryLevel(): Int {
-        val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        val batteryStatus = appContext.registerReceiver(null, filter)
-        val level = batteryStatus?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
-        val scale = batteryStatus?.getIntExtra(BatteryManager.EXTRA_SCALE, 100) ?: 100
+        val intent = context.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+        val level = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
+        val scale = intent?.getIntExtra(BatteryManager.EXTRA_SCALE, 100) ?: 100
         return if (level >= 0 && scale > 0) (level * 100) / scale else -1
     }
 }

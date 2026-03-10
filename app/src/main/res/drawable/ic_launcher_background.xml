@@ -4,7 +4,17 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Green gradient background - solid dark green base -->
     <path
-        android:fillColor="#1A1A2E"
+        android:fillColor="#0F3D22"
         android:pathData="M0,0h108v108H0z" />
+    <!-- Lighter green circle for depth -->
+    <path
+        android:fillColor="#145A32"
+        android:pathData="M54,54m-42,0a42,42 0,1 1,84 0a42,42 0,1 1,-84 0" />
+    <!-- Subtle bright green inner glow -->
+    <path
+        android:fillColor="#1A7A42"
+        android:fillAlpha="0.3"
+        android:pathData="M54,54m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0" />
 </vector>

@@ -24,7 +24,7 @@ Mexico's mandatory SIM registration (biometric CURP) has a June 30 deadline — 
 
 **Pricing (freemium, not subscription):**
 - Free ($0): 1 squad (max 8 people), text chat, location sharing, mesh networking
-- Pase Mundial: $199 MXN — unlimited squads (up to 25 each), no ads, voice notes, priority mesh (June 11 - July 19, 2026)
+- Pase Mundial: $199 MXN — unlimited squads (up to 25 each), no ads, voice notes, priority mesh (valid from purchase date through July 19, 2026)
 - Pase por Partido: $39 MXN — same as Mundial, single match day (6am to midnight)
 - Paid passes are one-time Stripe payments, not recurring subscriptions
 

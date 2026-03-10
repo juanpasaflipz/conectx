@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Simple "C" letter for Conectx -->
+    <path
+        android:fillColor="#6C63FF"
+        android:pathData="M54,28 C40.745,28 30,38.745 30,52 C30,65.255 40.745,76 54,76 C61.18,76 67.6,72.8 72,67.8 L66,62.4 C63,66 58.8,68 54,68 C45.163,68 38,60.837 38,52 C38,43.163 45.163,36 54,36 C58.8,36 63,38 66,41.6 L72,36.2 C67.6,31.2 61.18,28 54,28 Z" />
+</vector>

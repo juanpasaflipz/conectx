@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Conectx</string>
+
+    <!-- Navigation -->
+    <string name="nav_activation">Activar</string>
+    <string name="nav_squads">Squads</string>
+    <string name="nav_chat">Chat</string>
+    <string name="nav_location">Ubicacion</string>
+    <string name="nav_settings">Ajustes</string>
+    <string name="nav_back">Atras</string>
+
+    <!-- Activation -->
+    <string name="activation_title">Ingresa tu codigo de activacion</string>
+    <string name="activation_subtitle">Conecta con tus amigos en el estadio.\nSolo necesitas un email.</string>
+    <string name="activation_hint">Codigo de activacion</string>
+    <string name="activation_code_placeholder">ej. ABCD-1234</string>
+    <string name="activation_username_hint">Nombre de usuario</string>
+    <string name="activation_username_placeholder">Como te conocen tus amigos</string>
+    <string name="activation_button">Activar</string>
+    <string name="activation_pricing_info">Pase Mundial $249 MXN · Pase por Partido $39 MXN\nCompra tu pase en conectx.app</string>
+    <string name="activation_error_code">Ingresa un codigo de activacion</string>
+    <string name="activation_error_username">Elige un nombre de usuario</string>
+    <string name="activation_error_network">Sin conexion a internet. Intentalo de nuevo.</string>
+    <string name="activation_error_invalid">Codigo invalido</string>
+
+    <!-- Squads -->
+    <string name="squads_title">Tus Squads</string>
+    <string name="squads_empty">Aun no tienes squads.\nCrea uno o unete con un codigo.</string>
+    <string name="squads_member_count">%d miembro(s)</string>
+    <string name="squads_create">Crear Squad</string>
+    <string name="squads_join">Unirse</string>
+    <string name="squads_create_title">Nuevo Squad</string>
+    <string name="squads_create_name_hint">Nombre del squad</string>
+    <string name="squads_create_button">Crear</string>
+    <string name="squads_created_message">Squad creado. Comparte el codigo:</string>
+    <string name="squads_join_title">Unirse a un Squad</string>
+    <string name="squads_join_code_hint">Codigo (ej. AZT-7K3)</string>
+    <string name="squads_join_button">Unirse</string>
+    <string name="squads_join_error">Squad no encontrado. Asegurate de que un miembro del squad este cerca.</string>
+    <string name="squads_copy_code">Codigo copiado</string>
+
+    <!-- Chat -->
+    <string name="chat_empty">Aun no hay mensajes.\nEscribe algo para empezar.</string>
+    <string name="chat_input_placeholder">Mensaje…</string>
+    <string name="chat_send">Enviar</string>
+    <string name="chat_mesh_connected">%d conectado(s)</string>
+    <string name="chat_mesh_disconnected">Sin conexion</string>
+
+    <!-- Location -->
+    <string name="location_title">Ubicacion</string>
+    <string name="location_my_location">Mi Ubicacion</string>
+    <string name="location_section">Seccion</string>
+    <string name="location_section_required">Seccion *</string>
+    <string name="location_section_placeholder">ej. 214</string>
+    <string name="location_row">Fila</string>
+    <string name="location_row_placeholder">ej. F</string>
+    <string name="location_seat">Asiento</string>
+    <string name="location_seat_placeholder">ej. 23</string>
+    <string name="location_note">Nota</string>
+    <string name="location_note_placeholder">ej. Cerca del puesto de cerveza</string>
+    <string name="location_share">Compartir Ubicacion</string>
+    <string name="location_shared">Compartida</string>
+    <string name="location_squad_members">Miembros del Squad</string>
+    <string name="location_battery">Bateria</string>
+    <string name="location_section_short">Sec. %s</string>
+    <string name="location_row_short">Fila %s</string>
+    <string name="location_seat_short">Asiento %s</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Ajustes</string>
+    <string name="settings_account">Cuenta</string>
+    <string name="settings_user">Usuario</string>
+    <string name="settings_pass">Pase</string>
+    <string name="settings_pass_mundial">Pase Mundial</string>
+    <string name="settings_pass_partido">Pase por Partido</string>
+    <string name="settings_expires">Expira</string>
+    <string name="settings_about">Acerca de</string>
+    <string name="settings_version">Version</string>
+    <string name="settings_privacy">Conectx no recopila datos personales.\nNo necesitamos tu numero de telefono, ni tu ubicacion GPS, ni tu CURP.</string>
+    <string name="settings_sign_out">Cerrar sesion</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_mesh">Conectx Mesh</string>
+    <string name="notification_channel_general">Conectx</string>
+    <string name="notification_mesh_searching">Buscando amigos cercanos…</string>
+    <string name="notification_mesh_connected">%d conectado(s) al mesh</string>
+    <string name="notification_mesh_stop">Detener</string>
+    <string name="notification_squad_invite_title">Invitacion a squad</string>
+
+    <!-- Permissions -->
+    <string name="permission_title">Permisos necesarios</string>
+    <string name="permission_bluetooth_rationale">Conectx usa Bluetooth para conectarte con tus amigos en el estadio sin necesidad de internet. No rastreamos tu ubicacion GPS.</string>
+    <string name="permission_location_rationale">Android requiere permiso de ubicacion para descubrir dispositivos cercanos via Bluetooth. Conectx NO rastrea tu ubicacion GPS.</string>
+    <string name="permission_privacy_note">Tu privacidad es lo primero. Solo usamos estos permisos para la conexion entre dispositivos.</string>
+    <string name="permission_continue">Continuar</string>
+    <string name="permission_later">Ahora no</string>
+
+    <!-- Connection banners -->
+    <string name="banner_offline">Sin conexion — los mensajes se enviaran cuando haya red</string>
+    <string name="banner_mesh_only">Modo mesh — conectado via Bluetooth</string>
+
+    <!-- Common -->
+    <string name="cancel">Cancelar</string>
+    <string name="ok">OK</string>
+</resources>

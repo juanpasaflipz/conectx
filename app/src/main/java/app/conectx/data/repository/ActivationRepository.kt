@@ -5,8 +5,12 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import app.conectx.data.local.preferences.UserPreferences
 import app.conectx.data.remote.supabase.ActivationApi
+import app.conectx.domain.model.UserTier
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -70,15 +74,39 @@ class ActivationRepository @Inject constructor(
         return null // success
     }
 
+    /** Whether the pass has expired (activated but past expiry). */
+    val isPassExpired: Flow<Boolean> = combine(isActivated, passExpiry) { activated, expiry ->
+        activated && expiry != null && expiry > 0L && System.currentTimeMillis() >= expiry
+    }
+
+    /** Current tier derived from passType + expiry. Expired paid → Free. */
+    val userTier: Flow<UserTier> = combine(passType, isPassExpired) { type, expired ->
+        when {
+            type == "mundial" && !expired -> UserTier.Paid
+            type == "partido" && !expired -> UserTier.Paid
+            else -> UserTier.Free
+        }
+    }
+
+    /**
+     * Onboards a free-tier user: generates a UUID, saves username + free pass type.
+     * No activation code or network call required.
+     */
+    suspend fun onboardFree(username: String) {
+        dataStore.edit { prefs ->
+            prefs[UserPreferences.IS_ACTIVATED] = true
+            prefs[UserPreferences.USER_ID] = UUID.randomUUID().toString()
+            prefs[UserPreferences.USERNAME] = username.trim()
+            prefs[UserPreferences.PASS_TYPE] = "free"
+            prefs[UserPreferences.PASS_EXPIRY] = 0L
+        }
+    }
+
     /**
      * Check if the pass is still valid (not expired).
      */
     suspend fun isPassValid(): Boolean {
-        var expiry = 0L
-        dataStore.data.collect { prefs ->
-            expiry = prefs[UserPreferences.PASS_EXPIRY] ?: 0L
-            return@collect
-        }
+        val expiry = dataStore.data.first()[UserPreferences.PASS_EXPIRY] ?: 0L
         return expiry == 0L || System.currentTimeMillis() < expiry
     }
 

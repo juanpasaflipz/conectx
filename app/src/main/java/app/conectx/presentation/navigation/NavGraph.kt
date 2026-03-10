@@ -6,12 +6,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import android.os.Build
+import androidx.compose.ui.platform.LocalContext
 import app.conectx.presentation.activation.ActivationScreen
+import app.conectx.presentation.activation.OnboardingScreen
 import app.conectx.presentation.chat.ChatScreen
 import app.conectx.presentation.common.PermissionGate
 import app.conectx.presentation.location.LocationScreen
 import app.conectx.presentation.settings.SettingsScreen
 import app.conectx.presentation.squad.SquadListScreen
+import app.conectx.service.MeshService
 
 @Composable
 fun ConectxNavGraph() {
@@ -19,8 +23,18 @@ fun ConectxNavGraph() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Activation.route
+        startDestination = Screen.Onboarding.route
     ) {
+        composable(Screen.Onboarding.route) {
+            OnboardingScreen(
+                onOnboarded = {
+                    navController.navigate(Screen.SquadList.route) {
+                        popUpTo(Screen.Onboarding.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
         composable(Screen.Activation.route) {
             ActivationScreen(
                 onActivated = {
@@ -32,13 +46,24 @@ fun ConectxNavGraph() {
         }
 
         composable(Screen.SquadList.route) {
-            PermissionGate(onAllGranted = { /* permissions granted, mesh can start */ }) {
+            val context = LocalContext.current
+            PermissionGate(onAllGranted = {
+                val intent = MeshService.startIntent(context)
+                if (Build.VERSION.SDK_INT >= 26) {
+                    context.startForegroundService(intent)
+                } else {
+                    context.startService(intent)
+                }
+            }) {
                 SquadListScreen(
                     onSquadSelected = { squadId ->
                         navController.navigate(Screen.Chat.createRoute(squadId))
                     },
                     onSettingsClick = {
                         navController.navigate(Screen.Settings.route)
+                    },
+                    onUpgrade = {
+                        navController.navigate(Screen.Activation.route)
                     }
                 )
             }
@@ -72,12 +97,15 @@ fun ConectxNavGraph() {
         composable(Screen.Settings.route) {
             SettingsScreen(
                 onBack = {
-                    // If signed out, go back to activation; otherwise just pop
+                    // If signed out, go back to onboarding; otherwise just pop
                     if (!navController.popBackStack(Screen.SquadList.route, inclusive = false)) {
-                        navController.navigate(Screen.Activation.route) {
+                        navController.navigate(Screen.Onboarding.route) {
                             popUpTo(0) { inclusive = true }
                         }
                     }
+                },
+                onUpgrade = {
+                    navController.navigate(Screen.Activation.route)
                 }
             )
         }

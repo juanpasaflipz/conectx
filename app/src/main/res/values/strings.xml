@@ -18,11 +18,12 @@
     <string name="activation_username_hint">Nombre de usuario</string>
     <string name="activation_username_placeholder">Como te conocen tus amigos</string>
     <string name="activation_button">Activar</string>
-    <string name="activation_pricing_info">Pase Mundial $249 MXN · Pase por Partido $39 MXN\nCompra tu pase en conectx.app</string>
+    <string name="activation_pricing_info">Pase Mundial $199 MXN · Pase por Partido $39 MXN\nCompra tu pase en conectx.app</string>
     <string name="activation_error_code">Ingresa un codigo de activacion</string>
     <string name="activation_error_username">Elige un nombre de usuario</string>
     <string name="activation_error_network">Sin conexion a internet. Intentalo de nuevo.</string>
     <string name="activation_error_invalid">Codigo invalido</string>
+    <string name="activation_expired">Tu pase ha expirado. Compra un nuevo pase en conectx.app</string>
 
     <!-- Squads -->
     <string name="squads_title">Tus Squads</string>
@@ -74,7 +75,9 @@
     <string name="settings_pass">Pase</string>
     <string name="settings_pass_mundial">Pase Mundial</string>
     <string name="settings_pass_partido">Pase por Partido</string>
+    <string name="settings_pass_free">Gratis</string>
     <string name="settings_expires">Expira</string>
+    <string name="settings_upgrade">Mejorar plan</string>
     <string name="settings_about">Acerca de</string>
     <string name="settings_version">Version</string>
     <string name="settings_privacy">Conectx no recopila datos personales.\nNo necesitamos tu numero de telefono, ni tu ubicacion GPS, ni tu CURP.</string>
@@ -99,6 +102,19 @@
     <!-- Connection banners -->
     <string name="banner_offline">Sin conexion — los mensajes se enviaran cuando haya red</string>
     <string name="banner_mesh_only">Modo mesh — conectado via Bluetooth</string>
+    <string name="banner_wifi_off">Activa el WiFi para conectar con tus amigos (no necesitas internet, solo el WiFi encendido)</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_subtitle">Conecta con tus amigos en el estadio.\nGratis — sin codigo, sin tarjeta.</string>
+    <string name="onboarding_username_hint">Nombre de usuario</string>
+    <string name="onboarding_button">Continuar</string>
+    <string name="onboarding_free_note">1 squad gratis con hasta 8 amigos.\nMejora a Pase Mundial para squads ilimitados.</string>
+
+    <!-- Tier limits -->
+    <string name="squad_limit_title">Limite de plan</string>
+    <string name="squad_limit_message">Tu plan gratis permite 1 squad. Mejora a Pase Mundial para squads ilimitados.</string>
+    <string name="member_limit_message">Este squad ya tiene el maximo de miembros para tu plan. Mejora a Pase Mundial para hasta 25 miembros por squad.</string>
+    <string name="upgrade_button">Mejorar</string>
 
     <!-- Common -->
     <string name="cancel">Cancelar</string>

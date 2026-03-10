@@ -1,14 +1,30 @@
 package app.conectx.domain.usecase
 
+import app.conectx.data.repository.ActivationRepository
 import app.conectx.domain.model.Squad
+import app.conectx.domain.model.UserTier
 import app.conectx.domain.repository.SquadRepository
+import kotlinx.coroutines.flow.first
 import java.util.UUID
 import javax.inject.Inject
 
+sealed interface CreateSquadResult {
+    data class Success(val squad: Squad) : CreateSquadResult
+    data object SquadLimitReached : CreateSquadResult
+}
+
 class CreateSquadUseCase @Inject constructor(
-    private val squadRepository: SquadRepository
+    private val squadRepository: SquadRepository,
+    private val activationRepository: ActivationRepository
 ) {
-    suspend operator fun invoke(name: String, creatorId: String): Squad {
+    suspend operator fun invoke(name: String, creatorId: String): CreateSquadResult {
+        val tier = activationRepository.userTier.first()
+        val currentCount = squadRepository.getAllSquads().first().size
+
+        if (currentCount >= tier.maxSquads) {
+            return CreateSquadResult.SquadLimitReached
+        }
+
         val squad = Squad(
             id = UUID.randomUUID().toString(),
             name = name,
@@ -17,7 +33,7 @@ class CreateSquadUseCase @Inject constructor(
             createdAt = System.currentTimeMillis()
         )
         squadRepository.insertSquad(squad)
-        return squad
+        return CreateSquadResult.Success(squad)
     }
 
     /**

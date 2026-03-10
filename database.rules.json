@@ -1,0 +1,13 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null",
+    "squads": {
+      "$squadId": {
+        "records": {
+          ".indexOn": ["lamportClock"]
+        }
+      }
+    }
+  }
+}

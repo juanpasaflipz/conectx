@@ -12,9 +12,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+sealed interface ActivationStatus {
+    data object NotActivated : ActivationStatus
+    data object Active : ActivationStatus
+    data object Expired : ActivationStatus
+}
 
 data class ActivationUiState(
     val code: String = "",
@@ -34,9 +41,35 @@ class ActivationViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ActivationUiState())
     val uiState: StateFlow<ActivationUiState> = _uiState.asStateFlow()
 
-    /** Whether the user has already activated (skip to squads). */
-    val isAlreadyActivated: StateFlow<Boolean?> = activationRepository.isActivated
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
+    init {
+        // Pre-fill username for upgrade flow (user already chose one during onboarding)
+        viewModelScope.launch {
+            activationRepository.username.collect { name ->
+                if (name != null && _uiState.value.username.isBlank()) {
+                    _uiState.value = _uiState.value.copy(username = name)
+                }
+            }
+        }
+    }
+
+    /**
+     * Activation status for the upgrade/activation screen:
+     * - free tier → NotActivated (shows code entry form)
+     * - paid + expired → Expired (shows expiry banner + code entry)
+     * - paid + valid → Active (auto-skips to squads)
+     */
+    val activationStatus: StateFlow<ActivationStatus?> = combine(
+        activationRepository.isActivated,
+        activationRepository.passType,
+        activationRepository.passExpiry
+    ) { activated, passType, expiry ->
+        when {
+            !activated -> ActivationStatus.NotActivated
+            passType == "free" -> ActivationStatus.NotActivated
+            expiry != null && expiry > 0L && System.currentTimeMillis() >= expiry -> ActivationStatus.Expired
+            else -> ActivationStatus.Active
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), null)
 
     fun updateCode(value: String) {
         _uiState.value = _uiState.value.copy(

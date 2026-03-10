@@ -1,8 +1,6 @@
 package app.conectx.presentation.activation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
@@ -33,24 +33,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import app.conectx.R
 
 @Composable
-fun ActivationScreen(
-    onActivated: () -> Unit,
-    viewModel: ActivationViewModel = hiltViewModel()
+fun OnboardingScreen(
+    onOnboarded: () -> Unit,
+    viewModel: OnboardingViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-    val activationStatus by viewModel.activationStatus.collectAsState()
+    val hasUsername by viewModel.hasUsername.collectAsState()
 
-    // If active pass, skip straight to squads
-    LaunchedEffect(activationStatus) {
-        if (activationStatus == ActivationStatus.Active) {
-            onActivated()
-        }
+    // Already onboarded — skip to squad list
+    LaunchedEffect(hasUsername) {
+        if (hasUsername == true) onOnboarded()
     }
 
-    // Don't show UI while checking activation status
-    if (activationStatus == null) return
+    // Still checking DataStore
+    if (hasUsername == null) return
 
-    val isExpired = activationStatus == ActivationStatus.Expired
+    var username by rememberSaveable { mutableStateOf("") }
+    var isLoading by rememberSaveable { mutableStateOf(false) }
+    var showError by rememberSaveable { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -66,76 +65,45 @@ fun ActivationScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.activation_subtitle),
+            text = stringResource(R.string.onboarding_subtitle),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             textAlign = TextAlign.Center
         )
-        if (isExpired) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        MaterialTheme.colorScheme.errorContainer,
-                        MaterialTheme.shapes.small
-                    )
-                    .padding(12.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.activation_expired),
-                    color = MaterialTheme.colorScheme.onErrorContainer,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        // Username field
         OutlinedTextField(
-            value = uiState.username,
-            onValueChange = viewModel::updateUsername,
-            label = { Text(stringResource(R.string.activation_username_hint)) },
+            value = username,
+            onValueChange = {
+                username = it.take(24)
+                showError = false
+            },
+            label = { Text(stringResource(R.string.onboarding_username_hint)) },
             placeholder = { Text(stringResource(R.string.activation_username_placeholder)) },
             singleLine = true,
+            isError = showError,
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
-                imeAction = ImeAction.Next
-            )
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Activation code field
-        OutlinedTextField(
-            value = uiState.code,
-            onValueChange = viewModel::updateCode,
-            label = { Text(stringResource(R.string.activation_hint)) },
-            placeholder = { Text(stringResource(R.string.activation_code_placeholder)) },
-            singleLine = true,
-            isError = uiState.error != null || uiState.errorRes != null,
-            modifier = Modifier.fillMaxWidth(),
-            textStyle = MaterialTheme.typography.titleMedium.copy(
-                fontFamily = FontFamily.Monospace
-            ),
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Characters,
                 imeAction = ImeAction.Done
             ),
             keyboardActions = KeyboardActions(
-                onDone = { viewModel.activate(onActivated) }
+                onDone = {
+                    if (username.isNotBlank()) {
+                        isLoading = true
+                        viewModel.onboardFree(username.trim(), onOnboarded)
+                    } else {
+                        showError = true
+                    }
+                }
             )
         )
 
-        // Error message
-        val errorText = uiState.error ?: uiState.errorRes?.let { stringResource(it) }
-        if (errorText != null) {
+        if (showError) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = errorText,
+                text = stringResource(R.string.activation_error_username),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.fillMaxWidth()
@@ -145,26 +113,32 @@ fun ActivationScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { viewModel.activate(onActivated) },
-            enabled = !uiState.isLoading && uiState.code.isNotBlank() && uiState.username.isNotBlank(),
+            onClick = {
+                if (username.isBlank()) {
+                    showError = true
+                } else {
+                    isLoading = true
+                    viewModel.onboardFree(username.trim(), onOnboarded)
+                }
+            },
+            enabled = !isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (uiState.isLoading) {
+            if (isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(20.dp),
                     strokeWidth = 2.dp,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             } else {
-                Text(stringResource(R.string.activation_button))
+                Text(stringResource(R.string.onboarding_button))
             }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Pricing info
         Text(
-            text = stringResource(R.string.activation_pricing_info),
+            text = stringResource(R.string.onboarding_free_note),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
             textAlign = TextAlign.Center

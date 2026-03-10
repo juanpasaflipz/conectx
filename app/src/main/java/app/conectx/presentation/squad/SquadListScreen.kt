@@ -52,6 +52,7 @@ import app.conectx.domain.model.Squad
 fun SquadListScreen(
     onSquadSelected: (String) -> Unit,
     onSettingsClick: () -> Unit,
+    onUpgrade: () -> Unit,
     viewModel: SquadListViewModel = hiltViewModel()
 ) {
     val squads by viewModel.squads.collectAsState()
@@ -133,6 +134,48 @@ fun SquadListScreen(
             showError = uiState.joinError,
             onJoinClicked = { code -> viewModel.joinSquad(code) },
             onDismiss = { viewModel.dismissDialogs() }
+        )
+    }
+
+    if (uiState.showSquadLimitDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissDialogs() },
+            title = { Text(stringResource(R.string.squad_limit_title)) },
+            text = { Text(stringResource(R.string.squad_limit_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.dismissDialogs()
+                    onUpgrade()
+                }) {
+                    Text(stringResource(R.string.upgrade_button))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.dismissDialogs() }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    if (uiState.showMemberLimitDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.dismissDialogs() },
+            title = { Text(stringResource(R.string.squad_limit_title)) },
+            text = { Text(stringResource(R.string.member_limit_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.dismissDialogs()
+                    onUpgrade()
+                }) {
+                    Text(stringResource(R.string.upgrade_button))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.dismissDialogs() }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
         )
     }
 }

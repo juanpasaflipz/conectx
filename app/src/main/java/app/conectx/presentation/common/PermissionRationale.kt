@@ -121,5 +121,7 @@ fun PermissionGate(
         )
     }
 
-    content()
+    if (permissionsChecked) {
+        content()
+    }
 }

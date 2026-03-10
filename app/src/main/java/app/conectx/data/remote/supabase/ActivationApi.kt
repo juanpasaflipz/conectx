@@ -1,11 +1,13 @@
 package app.conectx.data.remote.supabase
 
 import android.util.Log
+import app.conectx.BuildConfig
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,8 +44,24 @@ class ActivationApi @Inject constructor() {
     /**
      * Verifies an activation code against the Supabase backend.
      * Returns a result with pass details if valid.
+     *
+     * In debug builds, accepts any non-empty code so the app can be
+     * tested end-to-end without a live backend.
      */
     suspend fun verify(code: String): Result<ActivationResult> {
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "DEBUG mode — auto-accepting code '$code'")
+            return Result.success(
+                ActivationResult(
+                    valid = true,
+                    userId = UUID.randomUUID().toString(),
+                    passType = "mundial",
+                    expiresAt = System.currentTimeMillis() + 90L * 24 * 60 * 60 * 1000,
+                    message = ""
+                )
+            )
+        }
+
         return try {
             val url = URL("$BASE_URL/verify-activation")
             val connection = (url.openConnection() as HttpURLConnection).apply {

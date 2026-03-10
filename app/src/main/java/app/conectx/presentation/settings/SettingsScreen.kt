@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,11 +36,13 @@ import java.util.Locale
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
+    onUpgrade: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val username by viewModel.username.collectAsState()
     val passType by viewModel.passType.collectAsState()
     val passExpiry by viewModel.passExpiry.collectAsState()
+    val isFreeUser by viewModel.isFreeUser.collectAsState()
 
     Scaffold(
         topBar = {
@@ -80,6 +83,7 @@ fun SettingsScreen(
                     val passLabel = when (passType) {
                         "mundial" -> stringResource(R.string.settings_pass_mundial)
                         "partido" -> stringResource(R.string.settings_pass_partido)
+                        "free" -> stringResource(R.string.settings_pass_free)
                         else -> "—"
                     }
                     SettingsRow(stringResource(R.string.settings_pass), passLabel)
@@ -91,6 +95,16 @@ fun SettingsScreen(
                         "—"
                     }
                     SettingsRow(stringResource(R.string.settings_expires), expiryLabel)
+
+                    if (isFreeUser) {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Button(
+                            onClick = onUpgrade,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(stringResource(R.string.settings_upgrade))
+                        }
+                    }
                 }
             }
 

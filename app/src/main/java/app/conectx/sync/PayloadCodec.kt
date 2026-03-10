@@ -72,7 +72,19 @@ object PayloadCodec {
 
     // ── SYNC_OFFER ────────────────────────────────────────────────────
 
-    fun encodeSyncOffer(squadClocks: Map<String, Long>): ByteArray {
+    data class SyncOfferPayload(
+        val squadClocks: Map<String, Long>,
+        val publicKey: ByteArray
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is SyncOfferPayload) return false
+            return squadClocks == other.squadClocks && publicKey.contentEquals(other.publicKey)
+        }
+        override fun hashCode(): Int = squadClocks.hashCode() * 31 + publicKey.contentHashCode()
+    }
+
+    fun encodeSyncOffer(squadClocks: Map<String, Long>, publicKey: ByteArray = ByteArray(0)): ByteArray {
         val baos = ByteArrayOutputStream()
         DataOutputStream(baos).use { out ->
             out.writeInt(squadClocks.size)
@@ -80,21 +92,33 @@ object PayloadCodec {
                 out.writeUTF(squadId)
                 out.writeLong(clock)
             }
+            out.writeInt(publicKey.size)
+            if (publicKey.isNotEmpty()) {
+                out.write(publicKey)
+            }
         }
         return baos.toByteArray()
     }
 
-    fun decodeSyncOffer(bytes: ByteArray): Map<String, Long> {
-        val result = mutableMapOf<String, Long>()
+    fun decodeSyncOffer(bytes: ByteArray): SyncOfferPayload {
+        val squadClocks = mutableMapOf<String, Long>()
         DataInputStream(ByteArrayInputStream(bytes)).use { input ->
             val count = input.readInt()
             repeat(count) {
                 val squadId = input.readUTF()
                 val clock = input.readLong()
-                result[squadId] = clock
+                squadClocks[squadId] = clock
             }
+            // Read public key — backward compatible with old format (no key)
+            val publicKey = if (input.available() > 0) {
+                val keySize = input.readInt()
+                if (keySize > 0) ByteArray(keySize).also { input.readFully(it) }
+                else ByteArray(0)
+            } else {
+                ByteArray(0)
+            }
+            return SyncOfferPayload(squadClocks, publicKey)
         }
-        return result
     }
 
     // ── SQUAD_META ────────────────────────────────────────────────────

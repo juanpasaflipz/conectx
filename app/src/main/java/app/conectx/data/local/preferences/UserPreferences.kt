@@ -15,6 +15,7 @@ object UserPreferences {
     val USER_ID = stringPreferencesKey("user_id")
     val USERNAME = stringPreferencesKey("username")
     val IS_ACTIVATED = booleanPreferencesKey("is_activated")
-    val PASS_TYPE = stringPreferencesKey("pass_type")       // "mundial" or "partido"
+    val PASS_TYPE = stringPreferencesKey("pass_type")       // "free", "mundial", or "partido"
     val PASS_EXPIRY = longPreferencesKey("pass_expiry")     // epoch millis
+    val SIGNING_KEYSET = stringPreferencesKey("signing_keyset")  // Tink Ed25519 JSON keyset
 }

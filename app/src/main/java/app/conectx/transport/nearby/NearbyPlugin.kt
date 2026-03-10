@@ -1,6 +1,7 @@
 package app.conectx.transport.nearby
 
 import android.content.Context
+import android.net.wifi.WifiManager
 import android.util.Log
 import app.conectx.domain.model.Peer
 import app.conectx.domain.model.SyncRecord
@@ -75,6 +76,17 @@ class NearbyPlugin @Inject constructor(
 
     override val isAvailable: Boolean
         get() = isRunning
+
+    /**
+     * True when the WiFi adapter is enabled (hardware on).
+     * Nearby Connections needs WiFi Direct for the data channel —
+     * BLE alone handles discovery but can't transfer payloads reliably.
+     */
+    val isWifiEnabled: Boolean
+        get() {
+            val wifiManager = context.getSystemService(Context.WIFI_SERVICE) as? WifiManager
+            return wifiManager?.isWifiEnabled == true
+        }
 
     /**
      * Set the local display name before calling start().

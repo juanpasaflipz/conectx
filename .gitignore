@@ -13,3 +13,5 @@ local.properties
 *.apk
 *.aab
 app/google-services.json
+keystore.properties
+*.jks

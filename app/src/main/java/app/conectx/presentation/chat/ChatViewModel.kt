@@ -53,6 +53,11 @@ class ChatViewModel @Inject constructor(
         .map { peers -> peers > 0 && !transportManager.firebasePlugin.isAvailable }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
 
+    /** True when WiFi hardware is off — Nearby Connections needs it for WiFi Direct */
+    val isWifiOff: StateFlow<Boolean> = connectedPeerCount
+        .map { !transportManager.nearbyPlugin.isWifiEnabled }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
     init {
         viewModelScope.launch {
             val squad = squadRepository.getSquadById(squadId)

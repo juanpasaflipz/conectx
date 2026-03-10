@@ -13,7 +13,7 @@ You are building **Conectx**, an Android app that keeps groups of friends connec
 Mexico's mandatory SIM registration (biometric CURP) has a June 30 deadline — mid-World Cup. Public trust in carriers is low after the Chronus hack (36.5M citizens' data leaked, Jan 2026). Conectx is positioned as a stadium utility that doesn't depend on carrier infrastructure. This is a feature, not a political statement.
 
 **Minimum data policy (CRITICAL — enforce throughout the codebase):**
-- Account creation requires ONLY: email + Stripe payment
+- Free tier requires ONLY: a username. Paid upgrade requires email + Stripe payment.
 - NO phone number collection or verification. Ever.
 - NO real name required. Username is user-chosen.
 - NO CURP, INE, or government ID
@@ -22,10 +22,11 @@ Mexico's mandatory SIM registration (biometric CURP) has a June 30 deadline — 
 - NO analytics that could identify individual users
 - All user-facing strings should reflect this: "solo necesitas un email"
 
-**Pricing (event-based, not subscription):**
-- Pase Mundial: $249 MXN — full World Cup access (June 11 - July 19, 2026)
-- Pase por Partido: $39 MXN — single match day (6am to midnight)
-- Both are one-time Stripe payments, not recurring subscriptions
+**Pricing (freemium, not subscription):**
+- Free ($0): 1 squad (max 8 people), text chat, location sharing, mesh networking
+- Pase Mundial: $199 MXN — unlimited squads (up to 25 each), no ads, voice notes, priority mesh (June 11 - July 19, 2026)
+- Pase por Partido: $39 MXN — same as Mundial, single match day (6am to midnight)
+- Paid passes are one-time Stripe payments, not recurring subscriptions
 
 ## Architecture
 

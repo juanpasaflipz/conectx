@@ -68,11 +68,12 @@ class FirebasePlugin @Inject constructor(
     override suspend fun start() {
         if (isRunning) return
 
-        // Firebase transport needs auth
+        // Try to sign in — but don't block startup if auth fails.
+        // With open RTDB rules (dev) or anonymous auth (prod), the
+        // transport works either way.
         val result = authSource.ensureSignedIn()
         if (result.isFailure) {
-            Log.w(TAG, "Cannot start — auth failed: ${result.exceptionOrNull()?.message}")
-            return
+            Log.w(TAG, "Auth failed (continuing without): ${result.exceptionOrNull()?.message}")
         }
 
         isRunning = true

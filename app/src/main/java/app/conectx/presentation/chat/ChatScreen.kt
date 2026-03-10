@@ -54,6 +54,7 @@ import app.conectx.R
 import app.conectx.domain.model.Message
 import app.conectx.presentation.common.MeshOnlyBanner
 import app.conectx.presentation.common.OfflineBanner
+import app.conectx.presentation.common.WifiOffBanner
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -71,6 +72,7 @@ fun ChatScreen(
     val peerCount by viewModel.connectedPeerCount.collectAsState()
     val isOffline by viewModel.isOffline.collectAsState()
     val isMeshOnly by viewModel.isMeshOnly.collectAsState()
+    val isWifiOff by viewModel.isWifiOff.collectAsState()
 
     Scaffold(
         topBar = {
@@ -103,8 +105,9 @@ fun ChatScreen(
                 .padding(padding)
                 .imePadding()
         ) {
-            // Connection status banners
-            OfflineBanner(isOffline = isOffline)
+            // Connection status banners — WiFi-off takes priority
+            WifiOffBanner(isWifiOff = isWifiOff)
+            OfflineBanner(isOffline = isOffline && !isWifiOff)
             MeshOnlyBanner(meshActive = peerCount > 0, firebaseAvailable = !isMeshOnly && !isOffline)
 
             // Message list (weight fills remaining space)

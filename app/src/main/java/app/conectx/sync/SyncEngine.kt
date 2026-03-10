@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,13 +35,13 @@ import javax.inject.Singleton
  * Core sync engine — the bridge between transport and storage.
  *
  * Responsibilities:
- * 1. INGEST:  Receive SyncRecords from the mesh → dedup → store in Room
- *             → update Lamport clock. CHAT records also produce a MessageEntity.
- *             SQUAD_META records create/update squads in Room.
+ * 1. INGEST:  Receive SyncRecords from the mesh → dedup → verify signature
+ *             → store in Room → update Lamport clock. CHAT records also
+ *             produce a MessageEntity. SQUAD_META records create/update squads.
  * 2. PRODUCE: Create SyncRecords from local user actions → assign clock →
- *             store → broadcast via TransportManager (or queue if offline).
- * 3. SYNC:    When a new peer connects, exchange SYNC_OFFERs so both sides
- *             fill any gaps caused by prior disconnection.
+ *             sign with Ed25519 → store → broadcast via TransportManager.
+ * 3. SYNC:    When a new peer connects, exchange SYNC_OFFERs (with public
+ *             keys) so both sides fill any gaps and can verify future messages.
  *
  * The engine runs its own CoroutineScope, started/stopped by MeshService.
  */
@@ -55,7 +56,8 @@ class SyncEngine @Inject constructor(
     private val conflictResolver: ConflictResolver,
     private val messageQueue: MessageQueue,
     private val firebaseAuth: FirebaseAuthSource,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val cryptoManager: CryptoManager
 ) {
     companion object {
         private const val TAG = "SyncEngine"
@@ -66,6 +68,9 @@ class SyncEngine @Inject constructor(
     // Set by the app after activation / login
     var localUserId: String = "local-${UUID.randomUUID().toString().take(8)}"
     var localUserName: String = "Conectx User"
+
+    // authorId → serialized Tink public keyset bytes, populated from SYNC_OFFERs
+    private val publicKeys = ConcurrentHashMap<String, ByteArray>()
 
     // ── Lifecycle ────────────────────────────────────────────────────
 
@@ -123,7 +128,7 @@ class SyncEngine @Inject constructor(
         val clock = lamportClock.tick(squadId)
         val payload = PayloadCodec.encodeChat(localUserName, text)
 
-        val record = SyncRecord(
+        val unsigned = SyncRecord(
             id = UUID.randomUUID().toString(),
             squadId = squadId,
             authorId = localUserId,
@@ -134,6 +139,11 @@ class SyncEngine @Inject constructor(
             signature = ByteArray(0)
         )
 
+        val record = unsigned.copy(
+            signature = cryptoManager.sign(CryptoManager.signableBytes(unsigned))
+        )
+        Log.d(TAG, "Signed CHAT record ${record.id}")
+
         persistRecord(record)
         sendOrQueue(record)
     }
@@ -142,7 +152,7 @@ class SyncEngine @Inject constructor(
         val clock = lamportClock.tick(squadId)
         val payload = PayloadCodec.encodeLocation(localUserName, ping)
 
-        val record = SyncRecord(
+        val unsigned = SyncRecord(
             id = UUID.randomUUID().toString(),
             squadId = squadId,
             authorId = localUserId,
@@ -152,6 +162,11 @@ class SyncEngine @Inject constructor(
             payload = payload,
             signature = ByteArray(0)
         )
+
+        val record = unsigned.copy(
+            signature = cryptoManager.sign(CryptoManager.signableBytes(unsigned))
+        )
+        Log.d(TAG, "Signed LOCATION record ${record.id}")
 
         persistRecord(record)
         sendOrQueue(record)
@@ -175,7 +190,7 @@ class SyncEngine @Inject constructor(
             )
         )
 
-        val record = SyncRecord(
+        val unsigned = SyncRecord(
             id = UUID.randomUUID().toString(),
             squadId = squad.id,
             authorId = localUserId,
@@ -185,6 +200,11 @@ class SyncEngine @Inject constructor(
             payload = payload,
             signature = ByteArray(0)
         )
+
+        val record = unsigned.copy(
+            signature = cryptoManager.sign(CryptoManager.signableBytes(unsigned))
+        )
+        Log.d(TAG, "Signed SQUAD_META record ${record.id}")
 
         persistRecord(record)
         sendOrQueue(record)
@@ -219,18 +239,38 @@ class SyncEngine @Inject constructor(
     private suspend fun handleSyncOffer(offer: SyncRecord) {
         if (offer.authorId == localUserId) return
 
+        // Extract and cache the peer's public key from the offer
+        val offerPayload = PayloadCodec.decodeSyncOffer(offer.payload)
+        if (offerPayload.publicKey.isNotEmpty()) {
+            publicKeys[offer.authorId] = offerPayload.publicKey
+            Log.d(TAG, "Cached public key for peer ${offer.authorId}")
+        }
+
         val session = SyncSession(
             peer = Peer(offer.authorId, offer.authorId, "", true, System.currentTimeMillis()),
             lamportClock = lamportClock,
             syncRecordDao = syncRecordDao,
             transportManager = transportManager,
-            localUserId = localUserId
+            localUserId = localUserId,
+            cryptoManager = cryptoManager
         )
         session.handleOffer(offer)
     }
 
     private suspend fun handleDataRecord(record: SyncRecord) {
         if (!conflictResolver.isNew(record)) return
+
+        // Verify signature if we have the sender's public key (log-only in v1)
+        val publicKey = publicKeys[record.authorId]
+        if (publicKey != null && record.signature.isNotEmpty()) {
+            val signable = CryptoManager.signableBytes(record)
+            if (CryptoManager.verify(signable, record.signature, publicKey)) {
+                Log.d(TAG, "Verified signature from ${record.authorId}")
+            } else {
+                Log.w(TAG, "Signature verification FAILED for record ${record.id} from ${record.authorId}")
+                // v1: log-only mode — accept record anyway for mesh reliability
+            }
+        }
 
         lamportClock.receive(record.squadId, record.lamportClock)
         persistRecord(record)
@@ -264,7 +304,8 @@ class SyncEngine @Inject constructor(
             lamportClock = lamportClock,
             syncRecordDao = syncRecordDao,
             transportManager = transportManager,
-            localUserId = localUserId
+            localUserId = localUserId,
+            cryptoManager = cryptoManager
         )
         session.sendOffer()
     }

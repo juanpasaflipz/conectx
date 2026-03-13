@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conectx — Pago exitoso</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #0a2e1a;
+      --green-mid: #145a32;
+      --green-bright: #27ae60;
+      --green-light: #a9dfbf;
+      --gold: #f4d03f;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-200: #e5e5e5;
+      --gray-600: #525252;
+      --gray-800: #262626;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--gray-800);
+      line-height: 1.6;
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 50%, #1a7a42 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .icon { font-size: 3.5rem; margin-bottom: 1rem; }
+
+    h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--gray-600);
+      margin-bottom: 2rem;
+    }
+
+    .code-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--green-bright);
+      margin-bottom: 0.5rem;
+    }
+
+    .code-box {
+      background: var(--gray-50);
+      border: 2px dashed var(--green-bright);
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .code {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      font-family: 'Courier New', monospace;
+      color: var(--green-dark);
+      word-break: break-all;
+      user-select: all;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+      background: var(--green-bright);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .copy-btn:hover { background: var(--green-mid); }
+    .copy-btn.copied { background: var(--gold); color: var(--green-dark); }
+
+    .pass-info {
+      background: var(--gray-50);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .pass-info .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.35rem 0;
+      font-size: 0.9rem;
+    }
+
+    .pass-info .label { color: var(--gray-600); }
+    .pass-info .value { font-weight: 700; }
+
+    .instructions {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .instructions ol {
+      text-align: left;
+      padding-left: 1.25rem;
+      margin-top: 0.5rem;
+    }
+
+    .instructions li { margin-bottom: 0.35rem; }
+
+    .play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--green-dark);
+      color: var(--white);
+      padding: 0.9rem 2rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.2s;
+    }
+
+    .play-btn:hover { transform: translateY(-1px); }
+
+    /* States */
+    .loading, .error, .success { display: none; }
+    .loading.active, .error.active, .success.active { display: block; }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--gray-200);
+      border-top-color: var(--green-bright);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 2rem auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .error-msg {
+      color: #e74c3c;
+      font-weight: 600;
+    }
+
+    .retry-btn {
+      margin-top: 1rem;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 0.6rem 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    @media (max-width: 640px) {
+      .card { padding: 2rem 1.5rem; }
+      .code { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <!-- Loading state -->
+  <div class="loading active" id="loadingState">
+    <div class="icon">&#x26BD;</div>
+    <h1>Procesando tu pago...</h1>
+    <div class="spinner"></div>
+    <p class="subtitle">Generando tu codigo de activacion</p>
+  </div>
+
+  <!-- Error state -->
+  <div class="error" id="errorState">
+    <div class="icon">&#x26A0;&#xFE0F;</div>
+    <h1>Algo salio mal</h1>
+    <p class="error-msg" id="errorMsg">No pudimos encontrar tu codigo. Puede tardar unos segundos despues del pago.</p>
+    <button class="retry-btn" onclick="fetchCode()">Reintentar</button>
+    <p style="margin-top: 1rem; font-size: 0.85rem; color: var(--gray-600);">
+      Si el problema persiste, contactanos: <a href="mailto:hola@conectx.app">hola@conectx.app</a>
+    </p>
+  </div>
+
+  <!-- Success state -->
+  <div class="success" id="successState">
+    <div class="icon">&#x1F389;</div>
+    <h1>Pago exitoso</h1>
+    <p class="subtitle">Tu pase esta listo. Guarda tu codigo de activacion.</p>
+
+    <div class="code-label">Tu codigo de activacion</div>
+    <div class="code-box">
+      <div class="code" id="activationCode"></div>
+      <button class="copy-btn" id="copyBtn" onclick="copyCode()">Copiar codigo</button>
+    </div>
+
+    <div class="pass-info">
+      <div class="row">
+        <span class="label">Pase</span>
+        <span class="value" id="passName"></span>
+      </div>
+      <div class="row">
+        <span class="label">Valido hasta</span>
+        <span class="value" id="passExpiry"></span>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <strong>Para activar tu pase:</strong>
+      <ol>
+        <li>Descarga Conectx de Google Play</li>
+        <li>Abre la app y elige un nombre de usuario</li>
+        <li>Ingresa tu codigo de activacion</li>
+        <li>Listo — crea tu squad y comparte el codigo con tu grupo</li>
+      </ol>
+    </div>
+
+    <a href="https://play.google.com/store/apps/details?id=app.conectx" class="play-btn">
+      Descargar Conectx
+    </a>
+  </div>
+</div>
+
+<script>
+var attempts = 0;
+var maxAttempts = 10;
+
+function getSessionId() {
+  var params = new URLSearchParams(window.location.search);
+  return params.get('session_id');
+}
+
+function setState(state) {
+  document.getElementById('loadingState').className = 'loading' + (state === 'loading' ? ' active' : '');
+  document.getElementById('errorState').className = 'error' + (state === 'error' ? ' active' : '');
+  document.getElementById('successState').className = 'success' + (state === 'success' ? ' active' : '');
+}
+
+function formatDate(iso) {
+  var d = new Date(iso);
+  var months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function formatCode(code) {
+  // Display as XXXX-XXXX-XXXX
+  return code.match(/.{1,4}/g).join('-');
+}
+
+function fetchCode() {
+  var sessionId = getSessionId();
+  if (!sessionId) {
+    document.getElementById('errorMsg').textContent = 'No se encontro el ID de sesion en la URL.';
+    setState('error');
+    return;
+  }
+
+  setState('loading');
+  attempts++;
+
+  fetch('/api/activation/lookup?session_id=' + encodeURIComponent(sessionId))
+    .then(function(res) {
+      if (res.status === 404) {
+        // Webhook might not have fired yet — retry with backoff
+        if (attempts < maxAttempts) {
+          setTimeout(fetchCode, 2000 * Math.min(attempts, 3));
+          return null;
+        }
+        throw new Error('not_found');
+      }
+      if (!res.ok) throw new Error('server_error');
+      return res.json();
+    })
+    .then(function(data) {
+      if (!data) return; // retrying
+      document.getElementById('activationCode').textContent = formatCode(data.code);
+      document.getElementById('activationCode').dataset.raw = data.code;
+      document.getElementById('passName').textContent = data.passType === 'mundial' ? 'Pase Mundial' : 'Pase por Partido';
+      document.getElementById('passExpiry').textContent = formatDate(data.expiresAt);
+      setState('success');
+    })
+    .catch(function(err) {
+      if (err.message === 'not_found') {
+        document.getElementById('errorMsg').textContent = 'Tu codigo aun no esta listo. Puede tardar unos segundos. Intenta de nuevo.';
+      } else {
+        document.getElementById('errorMsg').textContent = 'Error al obtener tu codigo. Intenta de nuevo.';
+      }
+      setState('error');
+    });
+}
+
+function copyCode() {
+  var code = document.getElementById('activationCode').dataset.raw;
+  navigator.clipboard.writeText(code).then(function() {
+    var btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copiado!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = 'Copiar codigo';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+fetchCode();
+</script>
+
+</body>
+</html>

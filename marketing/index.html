@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conectx — No pierdas a tu grupo en el Mundial</title>
+  <meta name="description" content="Chat y ubicación entre amigos en el estadio, sin depender de la señal. Comunicación directa por Bluetooth y WiFi. Sin carrier. Sin padrón. Sin límites." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #0a2e1a;
+      --green-mid: #145a32;
+      --green-bright: #27ae60;
+      --green-light: #a9dfbf;
+      --gold: #f4d03f;
+      --gold-dark: #d4ac0d;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #e5e5e5;
+      --gray-600: #525252;
+      --gray-800: #262626;
+      --red-accent: #e74c3c;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--gray-800);
+      line-height: 1.6;
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 50%, #1a7a42 100%);
+      color: var(--white);
+      padding: 2rem 1.5rem 4rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 70%, rgba(244, 208, 63, 0.08) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 30%, rgba(39, 174, 96, 0.1) 0%, transparent 50%);
+      animation: shimmer 8s ease-in-out infinite alternate;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-5%, 5%); }
+    }
+
+    .hero > * { position: relative; z-index: 1; }
+
+    .hero-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto 3rem;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .logo span { color: var(--gold); }
+
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+    .nav-links a {
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 6vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.1;
+      max-width: 800px;
+      margin: 0 auto 1.25rem;
+      letter-spacing: -0.03em;
+    }
+
+    .hero h1 .highlight {
+      color: var(--gold);
+      display: inline;
+    }
+
+    .hero-sub {
+      font-size: clamp(1.05rem, 2.5vw, 1.3rem);
+      color: rgba(255,255,255,0.85);
+      max-width: 600px;
+      margin: 0 auto 2.5rem;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--gold);
+      color: var(--green-dark);
+      padding: 1rem 2.5rem;
+      border-radius: 60px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(244, 208, 63, 0.3);
+    }
+
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(244, 208, 63, 0.4);
+    }
+
+    .hero-note {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .hero-badges {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.75);
+      font-weight: 500;
+    }
+
+    .badge-icon {
+      width: 20px;
+      height: 20px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    /* ─── PROBLEM ─── */
+    .problem {
+      background: var(--gray-50);
+      padding: 5rem 1.5rem;
+    }
+
+    .problem-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--green-bright);
+      margin-bottom: 0.75rem;
+    }
+
+    .problem h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.02em;
+    }
+
+    .problem p {
+      font-size: 1.1rem;
+      color: var(--gray-600);
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+
+    .problem-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2.5rem;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: var(--red-accent);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      line-height: 1.4;
+    }
+
+    /* ─── HOW IT WORKS ─── */
+    .how {
+      padding: 5rem 1.5rem;
+    }
+
+    .how-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .how h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 3rem;
+      letter-spacing: -0.02em;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .step {
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .step-number {
+      width: 56px;
+      height: 56px;
+      background: var(--green-bright);
+      color: var(--white);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+    }
+
+    .step h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .step p {
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    /* ─── FEATURES ─── */
+    .features {
+      background: var(--green-dark);
+      color: var(--white);
+      padding: 5rem 1.5rem;
+    }
+
+    .features-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .features h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+    }
+
+    /* ─── PRIVACY ─── */
+    .privacy {
+      padding: 5rem 1.5rem;
+      background: var(--gray-50);
+    }
+
+    .privacy-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .privacy h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+    }
+
+    .privacy p {
+      font-size: 1.1rem;
+      color: var(--gray-600);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .privacy-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+      text-align: left;
+    }
+
+    .privacy-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .privacy-check {
+      color: var(--green-bright);
+      font-weight: 700;
+      font-size: 1.2rem;
+      line-height: 1;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .privacy-item span {
+      font-size: 0.95rem;
+      color: var(--gray-800);
+      font-weight: 500;
+    }
+
+    /* ─── PRICING ─── */
+    .pricing {
+      padding: 5rem 1.5rem;
+    }
+
+    .pricing-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .pricing h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .pricing > .pricing-inner > p {
+      font-size: 1.1rem;
+      color: var(--gray-600);
+      margin-bottom: 2.5rem;
+    }
+
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .price-card {
+      border: 2px solid var(--gray-200);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      position: relative;
+      transition: border-color 0.2s;
+    }
+
+    .price-card.featured {
+      border-color: var(--green-bright);
+      background: linear-gradient(180deg, rgba(39, 174, 96, 0.03) 0%, transparent 100%);
+    }
+
+    .price-card.featured::before {
+      content: 'MAS POPULAR';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--green-bright);
+      color: var(--white);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    .price-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .price-amount {
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--green-dark);
+      line-height: 1;
+    }
+
+    .price-amount small {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--gray-600);
+    }
+
+    .price-desc {
+      font-size: 0.9rem;
+      color: var(--gray-600);
+      margin: 0.75rem 0 1.5rem;
+      line-height: 1.5;
+    }
+
+    .price-cta {
+      display: block;
+      width: 100%;
+      padding: 0.9rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .price-cta:hover { transform: translateY(-1px); }
+
+    .price-card.featured .price-cta {
+      background: var(--green-bright);
+      color: var(--white);
+    }
+
+    .price-card:not(.featured) .price-cta {
+      background: var(--gray-100);
+      color: var(--gray-800);
+    }
+
+    /* ─── ANDROID-ONLY WARNING ─── */
+    .android-only-banner {
+      background: #fff3cd;
+      border: 2px solid #ffc107;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+
+    .android-only-banner .warning-icon {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .android-only-banner .warning-text {
+      font-size: 0.95rem;
+      color: #664d03;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .android-only-banner .warning-text small {
+      display: block;
+      font-weight: 400;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      color: #997a0a;
+    }
+
+    .android-badge {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.03em;
+    }
+
+    /* iOS user warning — shown via JS */
+    .ios-warning-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .ios-warning-overlay.visible { display: flex; }
+
+    .ios-warning-box {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    .ios-warning-box .warning-emoji { font-size: 3rem; margin-bottom: 1rem; }
+
+    .ios-warning-box h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+      color: var(--gray-800);
+    }
+
+    .ios-warning-box p {
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+
+    .ios-warning-box .btn-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .ios-warning-box .btn-cancel {
+      padding: 0.85rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      background: var(--red-accent);
+      color: var(--white);
+    }
+
+    .ios-warning-box .btn-proceed {
+      padding: 0.7rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid var(--gray-200);
+      cursor: pointer;
+      background: var(--white);
+      color: var(--gray-600);
+    }
+
+    /* ─── FAQ ─── */
+    .faq {
+      padding: 5rem 1.5rem;
+      background: var(--gray-50);
+    }
+
+    .faq-inner {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .faq h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--gray-200);
+      padding: 1.5rem 0;
+    }
+
+    .faq-q {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--gray-800);
+    }
+
+    .faq-a {
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      line-height: 1.6;
+    }
+
+    /* ─── FINAL CTA ─── */
+    .final-cta {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      color: var(--white);
+      padding: 5rem 1.5rem;
+      text-align: center;
+    }
+
+    .final-cta h2 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+
+    .final-cta p {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 2rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .final-cta .hero-cta { font-size: 1.1rem; }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      border-top: 1px solid var(--gray-200);
+    }
+
+    footer a {
+      color: var(--gray-600);
+      text-decoration: none;
+    }
+
+    footer a:hover { color: var(--gray-800); }
+
+    /* ─── BETA BANNER ─── */
+    .beta-banner {
+      background: linear-gradient(90deg, #f4d03f 0%, #f5ab35 100%);
+      color: var(--green-dark);
+      text-align: center;
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .beta-banner span { font-weight: 400; }
+
+    /* early-access-badge removed — everything is free now */
+
+    /* ─── WAITLIST FORM ─── */
+    .waitlist-form {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 100%;
+    }
+
+    .waitlist-form input {
+      flex: 1;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      border: 2px solid var(--gray-200);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      min-width: 0;
+    }
+
+    .waitlist-form input:focus {
+      border-color: var(--green-bright);
+    }
+
+    .waitlist-form button {
+      padding: 0.85rem 1.25rem;
+      border-radius: 12px;
+      border: none;
+      background: var(--green-bright);
+      color: var(--white);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    .waitlist-form button:hover { background: var(--green-mid); }
+    .waitlist-form button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .waitlist-msg {
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      font-weight: 600;
+    }
+
+    .waitlist-msg.success { color: var(--green-bright); }
+    .waitlist-msg.error { color: var(--red-accent); }
+
+    /* ─── HERO WAITLIST ─── */
+    .hero-waitlist {
+      max-width: 480px;
+      margin: 0 auto 1rem;
+    }
+
+    .hero-waitlist .waitlist-form input {
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.3);
+      color: var(--white);
+    }
+
+    .hero-waitlist .waitlist-form input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .hero-waitlist .waitlist-form input:focus {
+      border-color: var(--gold);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .hero-waitlist .waitlist-form button {
+      background: var(--gold);
+      color: var(--green-dark);
+    }
+
+    .hero-waitlist .waitlist-msg { color: var(--gold); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      .hero { padding: 1.5rem 1rem 3rem; }
+      .hero-nav { margin-bottom: 2rem; }
+      .nav-links { display: none; }
+      .hero-badges { gap: 1rem; }
+      .problem, .how, .features, .privacy, .pricing, .faq, .final-cta {
+        padding: 3.5rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── BETA BANNER ─── -->
+<div class="beta-banner">
+  BETA ABIERTA EN ANDROID &amp; iPHONE &mdash; <span>100% gratis. Registrate y pruebala antes del Mundial.</span>
+</div>
+
+<!-- ─── HERO ─── -->
+<section class="hero">
+  <nav class="hero-nav">
+    <div class="logo">Conect<span>x</span></div>
+    <div class="nav-links">
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#precio">Precio</a>
+      <a href="#preguntas">FAQ</a>
+    </div>
+  </nav>
+
+  <h1>No pierdas a tu grupo.<br /><span class="highlight">Ni en el Azteca.</span></h1>
+
+  <p class="hero-sub">
+    Chat y ubicacion entre amigos dentro del estadio. Funciona por Bluetooth y WiFi, sin depender de la senal ni del carrier.
+  </p>
+
+  <div class="hero-waitlist">
+    <form class="waitlist-form" id="heroWaitlistForm">
+      <input type="email" placeholder="tu@email.com" required id="heroEmail" />
+      <button type="submit">Unirme al beta</button>
+    </form>
+    <div class="waitlist-msg" id="heroWaitlistMsg"></div>
+  </div>
+
+  <p class="hero-note">Android &middot; iPhone &middot; Beta abierta &middot; Funciona sin internet &middot; Sin registro de linea</p>
+
+  <div class="hero-badges">
+    <div class="badge">
+      <div class="badge-icon">&#x2713;</div>
+      Sin senal necesaria
+    </div>
+    <div class="badge">
+      <div class="badge-icon">&#x2713;</div>
+      Sin numero de telefono
+    </div>
+    <div class="badge">
+      <div class="badge-icon">&#x2713;</div>
+      Cifrado de extremo a extremo
+    </div>
+  </div>
+</section>
+
+<!-- ─── PROBLEM ─── -->
+<section class="problem">
+  <div class="problem-inner">
+    <div class="section-label">El problema</div>
+    <h2>87,000 personas. Mismas antenas. Cero senal.</h2>
+    <p>
+      En el Mundial, el estadio va a estar lleno y las torres de celular saturadas. Tu grupo se separa en la entrada, alguien se pierde buscando comida, y nadie puede comunicarse. WhatsApp no carga. Las llamadas no conectan. Los mensajes se quedan en "enviando..."
+    </p>
+
+    <div class="problem-stats">
+      <div class="stat-card">
+        <div class="stat-number">87K</div>
+        <div class="stat-label">aficionados en el Azteca compartiendo las mismas antenas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">0%</div>
+        <div class="stat-label">de WhatsApp funciona cuando la red esta saturada</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">de Conectx funciona sin internet — usa Bluetooth y WiFi directo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="how" id="como-funciona">
+  <div class="how-inner">
+    <h2>Asi de facil</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Registrate gratis</h3>
+        <p>Solo necesitas un email. Sin numero de telefono, sin CURP, sin datos innecesarios. Listo en 30 segundos.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>Crea tu squad</h3>
+        <p>Abre la app, crea un grupo y comparte el codigo con tus amigos. Todos se unen en segundos.</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Lleguen al estadio</h3>
+        <p>La app conecta automaticamente a tu grupo por Bluetooth y WiFi. Chat y ubicacion funcionan sin senal de celular.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURES ─── -->
+<section class="features">
+  <div class="features-inner">
+    <h2>Hecho para el estadio</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4E1;</div>
+        <h3>Red mesh entre dispositivos</h3>
+        <p>Tu telefono se conecta directamente con los de tus amigos por Bluetooth y WiFi. Sin pasar por antenas, sin depender de Telcel, AT&T o Movistar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4CD;</div>
+        <h3>Ubicacion dentro del estadio</h3>
+        <p>"Estoy en la seccion 214, fila F, junto al puesto de cerveza." Comparte tu ubicacion en el estadio para que tu grupo te encuentre.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F4AC;</div>
+        <h3>Chat de grupo offline</h3>
+        <p>Mensajes de texto que viajan por la red mesh. Si no hay conexion directa, el mensaje salta entre dispositivos hasta llegar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F512;</div>
+        <h3>Privacidad real</h3>
+        <p>Comunicacion cifrada de extremo a extremo. Tus mensajes nunca pasan por un servidor. Dispositivo a dispositivo, sin intermediarios.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x26A1;</div>
+        <h3>Funciona tambien con internet</h3>
+        <p>Cuando hay senal, Conectx usa internet para sincronizar al instante. Cuando no hay, cambia automaticamente a mesh. Tu no tienes que hacer nada.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">&#x1F50B;</div>
+        <h3>Optimizado para bateria</h3>
+        <p>Bluetooth Low Energy consume muy poca bateria. Tu telefono aguanta todo el partido sin problema.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRIVACY ─── -->
+<section class="privacy">
+  <div class="privacy-inner">
+    <div class="section-label">Tu informacion es tuya</div>
+    <h2>Lo que NO pedimos</h2>
+    <p>
+      Para usar Conectx solo necesitas un email. Es 100% gratis. Chat, ubicacion, squads ilimitados. No necesitamos tu vida entera para que puedas hablar con tus amigos.
+    </p>
+
+    <div class="privacy-list">
+      <div class="privacy-item">
+        <span class="privacy-check">&#x2717;</span>
+        <span>Numero de telefono</span>
+      </div>
+      <div class="privacy-item">
+        <span class="privacy-check">&#x2717;</span>
+        <span>CURP o identificacion oficial</span>
+      </div>
+      <div class="privacy-item">
+        <span class="privacy-check">&#x2717;</span>
+        <span>Nombre real</span>
+      </div>
+      <div class="privacy-item">
+        <span class="privacy-check">&#x2717;</span>
+        <span>Datos biometricos</span>
+      </div>
+      <div class="privacy-item">
+        <span class="privacy-check">&#x2717;</span>
+        <span>Acceso a tu agenda de contactos</span>
+      </div>
+      <div class="privacy-item">
+        <span class="privacy-check">&#x2717;</span>
+        <span>Tu ubicacion GPS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRICING ─── -->
+<section class="pricing" id="precio">
+  <div class="pricing-inner">
+    <h2>100% gratis. Sin limites.</h2>
+    <p>Squads ilimitados, sin topes de personas, chat, ubicacion y red mesh completa. Todo gratis durante la beta.</p>
+
+    <div class="android-only-banner" style="border-color: #4CAF50; background: #e8f5e9;">
+      <span class="warning-icon">&#x1F4F1;</span>
+      <span class="warning-text" style="color: #2e7d32;">
+        Disponible en Android y iPhone. Beta abierta en ambas plataformas.
+        <small style="color: #558b2f;">Android en Google Play y iPhone en TestFlight. Registrate para recibir acceso.</small>
+      </span>
+    </div>
+
+    <div class="pricing-cards" style="max-width: 480px;">
+      <div class="price-card featured">
+        <div class="android-badge">ANDROID &amp; iPHONE BETA</div>
+        <div class="price-name">Conectx Beta</div>
+        <div class="price-amount">Gratis</div>
+        <div class="price-desc">
+          Squads ilimitados. Sin tope de personas. Chat de texto y ubicacion en el estadio. Red mesh completa. Todo incluido, sin pagar nada.
+        </div>
+        <form class="waitlist-form" id="pricingWaitlistForm">
+          <input type="email" placeholder="tu@email.com" required id="pricingEmail" />
+          <button type="submit">Unirme al beta</button>
+        </form>
+        <div class="waitlist-msg" id="pricingWaitlistMsg"></div>
+      </div>
+    </div>
+
+    <p style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--gray-600);">
+      Sin tarjeta de credito. Sin trucos. Solo tu email y listo.
+    </p>
+  </div>
+</section>
+
+<!-- ─── FAQ ─── -->
+<section class="faq" id="preguntas">
+  <div class="faq-inner">
+    <h2>Preguntas frecuentes</h2>
+
+    <div class="faq-item">
+      <div class="faq-q">Como funciona sin internet?</div>
+      <div class="faq-a">Conectx usa Bluetooth y WiFi para conectar los telefonos de tu grupo directamente, sin pasar por antenas de celular ni internet. Es como un walkie-talkie digital entre celulares.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Que tan lejos funciona?</div>
+      <div class="faq-a">Bluetooth tiene un rango de 10-30 metros, pero los mensajes saltan entre dispositivos. Si tu amigo esta lejos pero hay otros usuarios de Conectx en medio, el mensaje llega a traves de la red mesh.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Necesito registrar mi linea telefonica?</div>
+      <div class="faq-a">No. Conectx no usa tu numero de telefono ni tu linea celular. Funciona independientemente de tu carrier. Solo necesitas un email para crear tu cuenta.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Funciona en iPhone?</div>
+      <div class="faq-a">Si. La beta esta disponible en Android (Google Play) y en iPhone (TestFlight). Registrate con tu email y te enviamos el enlace para descargar en tu plataforma.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Que pasa con mi bateria?</div>
+      <div class="faq-a">Conectx usa Bluetooth Low Energy, que consume muy poca bateria. En nuestras pruebas, un partido completo de 2 horas gasta menos del 8% de bateria.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Es solo para el Mundial?</div>
+      <div class="faq-a">Lanzamos con el Mundial 2026, pero funciona en cualquier estadio o evento masivo. Liga MX, conciertos, festivales — donde haya mucha gente y poca senal.</div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-q">Mis mensajes son privados?</div>
+      <div class="faq-a">Si. Todos los mensajes estan cifrados de extremo a extremo. Ni siquiera nosotros podemos leerlos. Viajan directamente entre dispositivos, sin pasar por ningun servidor.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FINAL CTA ─── -->
+<section class="final-cta">
+  <h2>El Mundial es en 3 meses.<br />Tu grupo te va a necesitar.</h2>
+  <p>
+    La beta es gratis y esta abierta en Android y iPhone. Registrate y pruebala antes del Mundial.
+  </p>
+  <a href="#precio" class="hero-cta">
+    Unirme al beta gratis &rarr;
+  </a>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <p>Conectx &copy; 2026 &middot; <a href="/privacidad">Privacidad</a> &middot; <a href="#">Terminos</a> &middot; <a href="mailto:hola@conectx.app">hola@conectx.app</a></p>
+  <p style="margin-top: 0.5rem; font-size: 0.8rem; color: #999;">
+    Tu linea depende de ellos. Tu grupo depende de ti.
+  </p>
+</footer>
+
+<!-- iOS warning modal -->
+<div class="ios-warning-overlay" id="iosWarning">
+  <div class="ios-warning-box">
+    <div class="warning-emoji">&#x1F4F1;</div>
+    <h3>iPhone beta disponible</h3>
+    <p>
+      Detectamos que estas usando un iPhone o iPad. La beta para iOS esta disponible en TestFlight. Registrate con tu email y te enviamos el enlace para descargar.
+    </p>
+    <div class="btn-row">
+      <button class="btn-cancel" style="background: var(--green-bright); color: var(--white); font-weight: 700;" onclick="closeIosWarning()">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// iOS info modal (informational only, no payment gate)
+(function() {
+  window.closeIosWarning = function() {
+    document.getElementById('iosWarning').classList.remove('visible');
+  };
+})();
+
+// Platform detection
+function detectPlatform() {
+  var ua = navigator.userAgent || '';
+  if (/iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return 'ios';
+  if (/Android/.test(ua)) return 'android';
+  if (/Mobi/.test(ua)) return 'other';
+  return 'desktop';
+}
+
+// Waitlist forms
+function handleWaitlist(formId, emailId, msgId) {
+  var form = document.getElementById(formId);
+  if (!form) return;
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var email = document.getElementById(emailId).value;
+    var msg = document.getElementById(msgId);
+    var btn = form.querySelector('button');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+    fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, platform: detectPlatform() })
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      if (data.ok) {
+        msg.className = 'waitlist-msg success';
+        msg.textContent = data.message || 'Listo — te avisamos cuando este lista.';
+        document.getElementById(emailId).value = '';
+      } else {
+        msg.className = 'waitlist-msg error';
+        msg.textContent = data.error || 'Error. Intentalo de nuevo.';
+      }
+      btn.disabled = false;
+      btn.textContent = formId === 'heroWaitlistForm' ? 'Unirme al beta' : 'Anotarme';
+    })
+    .catch(function() {
+      msg.className = 'waitlist-msg error';
+      msg.textContent = 'Error de conexion. Intentalo de nuevo.';
+      btn.disabled = false;
+      btn.textContent = formId === 'heroWaitlistForm' ? 'Unirme al beta' : 'Anotarme';
+    });
+  });
+}
+handleWaitlist('heroWaitlistForm', 'heroEmail', 'heroWaitlistMsg');
+handleWaitlist('pricingWaitlistForm', 'pricingEmail', 'pricingWaitlistMsg');
+</script>
+
+</body>
+</html>

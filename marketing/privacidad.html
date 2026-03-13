@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Política de Privacidad — Conectx</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #0a2e1a;
+      --green-mid: #145a32;
+      --green-bright: #27ae60;
+      --gold: #f4d03f;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-200: #e5e5e5;
+      --gray-600: #525252;
+      --gray-800: #262626;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--gray-800);
+      line-height: 1.7;
+      background: var(--white);
+    }
+    header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: var(--white);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    header a { color: var(--gold); text-decoration: none; font-weight: 700; font-size: 1.25rem; }
+    header h1 { font-size: 1.75rem; margin-top: 1rem; font-weight: 800; }
+    header p { opacity: 0.8; margin-top: 0.25rem; font-size: 0.9rem; }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--green-mid);
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    p, li { font-size: 0.95rem; color: var(--gray-600); margin-bottom: 0.75rem; }
+    ul { padding-left: 1.25rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.4rem; }
+    strong { color: var(--gray-800); }
+    .highlight {
+      background: var(--gray-50);
+      border-left: 3px solid var(--green-bright);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .highlight p { margin-bottom: 0; }
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      font-size: 0.85rem;
+      color: var(--gray-600);
+    }
+    footer a { color: var(--green-bright); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/">Conectx</a>
+  <h1>Política de Privacidad</h1>
+  <p>Última actualización: 12 de marzo de 2026</p>
+</header>
+
+<main>
+
+  <div class="highlight">
+    <p><strong>Resumen:</strong> Conectx recopila la mínima cantidad de datos posible. No rastreamos tu ubicación por GPS, no pedimos tu número de teléfono, y tus mensajes viajan directamente entre dispositivos sin pasar por nuestros servidores.</p>
+  </div>
+
+  <h2>1. Quiénes somos</h2>
+  <p>Conectx es una aplicación de comunicación diseñada para mantener a grupos de amigos conectados dentro de estadios durante eventos masivos. La app funciona mediante redes mesh entre dispositivos (Bluetooth), sin depender de señal celular.</p>
+  <p>Contacto: <a href="mailto:hola@conectx.app">hola@conectx.app</a></p>
+
+  <h2>2. Datos que recopilamos</h2>
+
+  <p><strong>Cuenta gratuita:</strong></p>
+  <ul>
+    <li>Nombre de usuario (elegido por ti)</li>
+  </ul>
+
+  <p><strong>Cuenta de pago (Pase Mundial o Pase por Partido):</strong></p>
+  <ul>
+    <li>Correo electrónico</li>
+    <li>Información de pago (procesada por Stripe — nunca almacenamos datos de tarjeta)</li>
+  </ul>
+
+  <h2>3. Datos que NO recopilamos</h2>
+  <ul>
+    <li><strong>Número de teléfono</strong> — nunca lo pedimos</li>
+    <li><strong>Nombre real</strong> — tu usuario es lo que tú elijas</li>
+    <li><strong>CURP, INE o identificación oficial</strong> — no requerimos verificación de identidad</li>
+    <li><strong>Contactos o libreta de direcciones</strong> — no accedemos a tus contactos</li>
+    <li><strong>Ubicación GPS</strong> — la ubicación en el estadio es manual (sección, fila, asiento)</li>
+    <li><strong>Datos biométricos</strong> — no recopilamos huellas, rostro, ni datos biométricos</li>
+  </ul>
+
+  <h2>4. Cómo funcionan los mensajes</h2>
+  <p>Los mensajes en Conectx viajan directamente entre dispositivos mediante Bluetooth (red mesh). Esto significa que:</p>
+  <ul>
+    <li>Tus mensajes <strong>no pasan por nuestros servidores</strong> cuando estás en modo mesh</li>
+    <li>Los mensajes se firman criptográficamente (Ed25519) para verificar autenticidad</li>
+    <li>Cuando hay internet disponible, usamos Firebase como respaldo — los mensajes en tránsito están protegidos por TLS</li>
+  </ul>
+
+  <h2>5. Almacenamiento local</h2>
+  <p>Toda tu información (mensajes, squads, ubicaciones) se almacena localmente en tu dispositivo en una base de datos cifrada. Si desinstalas la app, estos datos se eliminan.</p>
+
+  <h2>6. Servicios de terceros</h2>
+  <ul>
+    <li><strong>Firebase (Google)</strong> — autenticación anónima, sincronización de squads cuando hay internet, y notificaciones push para invitaciones</li>
+    <li><strong>Stripe</strong> — procesamiento de pagos para pases de pago. Stripe tiene su propia <a href="https://stripe.com/privacy" target="_blank">política de privacidad</a></li>
+    <li><strong>Supabase</strong> — verificación de códigos de activación</li>
+  </ul>
+  <p>No utilizamos servicios de analytics que identifiquen usuarios individuales. No hay rastreo publicitario.</p>
+
+  <h2>7. Permisos del dispositivo</h2>
+  <p><strong>Bluetooth</strong> — necesario para la red mesh entre dispositivos. Es la función principal de la app.</p>
+  <p><strong>Notificaciones</strong> — para recibir invitaciones a squads y coordinación pre-partido.</p>
+  <p>No solicitamos acceso a cámara, micrófono, ubicación GPS, contactos, ni almacenamiento externo.</p>
+
+  <h2>8. Seguridad</h2>
+  <p>Utilizamos criptografía Ed25519 para firmar todos los mensajes y verificar su autenticidad. Las claves de firma se generan y almacenan en el dispositivo (Keychain en iOS, Tink en Android) y nunca se comparten con nosotros.</p>
+
+  <h2>9. Retención de datos</h2>
+  <p>Los datos de tu cuenta se conservan mientras tengas la app instalada. Los pases de pago tienen vigencia definida (Pase Mundial hasta el 19 de julio de 2026, Pase por Partido hasta medianoche del día del evento). Puedes eliminar tu cuenta y todos tus datos en cualquier momento desde la configuración de la app.</p>
+
+  <h2>10. Menores de edad</h2>
+  <p>Conectx no está dirigida a menores de 13 años. No recopilamos intencionalmente datos de menores de 13 años.</p>
+
+  <h2>11. Cambios a esta política</h2>
+  <p>Si actualizamos esta política, publicaremos la versión actualizada en esta página con la fecha de modificación. Para cambios significativos, notificaremos a través de la app.</p>
+
+  <h2>12. Contacto</h2>
+  <p>Si tienes preguntas sobre esta política de privacidad o sobre tus datos, escríbenos a <a href="mailto:hola@conectx.app">hola@conectx.app</a>.</p>
+
+</main>
+
+<footer>
+  <p>Conectx &copy; 2026 &middot; <a href="/">Inicio</a> &middot; <a href="mailto:hola@conectx.app">hola@conectx.app</a></p>
+</footer>
+
+</body>
+</html>

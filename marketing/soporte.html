@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Soporte — Conectx</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #0a2e1a;
+      --green-mid: #145a32;
+      --green-bright: #27ae60;
+      --gold: #f4d03f;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-200: #e5e5e5;
+      --gray-600: #525252;
+      --gray-800: #262626;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--gray-800);
+      line-height: 1.7;
+      background: var(--white);
+    }
+    header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: var(--white);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    header a { color: var(--gold); text-decoration: none; font-weight: 700; font-size: 1.25rem; }
+    header h1 { font-size: 1.75rem; margin-top: 1rem; font-weight: 800; }
+    header p { opacity: 0.8; margin-top: 0.25rem; font-size: 0.9rem; }
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+    h2 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--green-mid);
+      margin-top: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    p, li { font-size: 0.95rem; color: var(--gray-600); margin-bottom: 0.75rem; }
+    ul { padding-left: 1.25rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.4rem; }
+    strong { color: var(--gray-800); }
+    a { color: var(--green-bright); }
+    .highlight {
+      background: var(--gray-50);
+      border-left: 3px solid var(--green-bright);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .highlight p { margin-bottom: 0; }
+    .contact-card {
+      background: var(--gray-50);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+    .contact-card a {
+      display: inline-block;
+      background: var(--green-bright);
+      color: var(--white);
+      padding: 0.75rem 2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 700;
+      margin-top: 0.75rem;
+      transition: background 0.2s;
+    }
+    .contact-card a:hover { background: var(--green-mid); }
+    .faq-item { border-bottom: 1px solid var(--gray-200); padding: 1.25rem 0; }
+    .faq-q { font-size: 1rem; font-weight: 700; color: var(--gray-800); margin-bottom: 0.4rem; }
+    .faq-a { font-size: 0.95rem; color: var(--gray-600); line-height: 1.6; }
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      font-size: 0.85rem;
+      color: var(--gray-600);
+    }
+    footer a { color: var(--green-bright); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="/">Conectx</a>
+  <h1>Soporte</h1>
+  <p>Estamos aqui para ayudarte</p>
+</header>
+
+<main>
+
+  <div class="highlight">
+    <p><strong>Beta abierta:</strong> Conectx esta en beta en Android y iPhone. Si encuentras un problema, tu reporte nos ayuda a mejorar la app antes del Mundial.</p>
+  </div>
+
+  <h2>Contacto directo</h2>
+  <p>La forma mas rapida de recibir ayuda es escribirnos por correo. Respondemos en menos de 24 horas.</p>
+
+  <div class="contact-card">
+    <p><strong>hola@conectx.app</strong></p>
+    <a href="mailto:hola@conectx.app">Enviar correo</a>
+  </div>
+
+  <h2>Preguntas frecuentes</h2>
+
+  <div class="faq-item">
+    <div class="faq-q">Como descargo la app?</div>
+    <div class="faq-a">Registrate con tu email en <a href="/">conectx.app</a> y te enviamos el enlace de descarga. Android esta en Google Play y iPhone en TestFlight.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">La app no se conecta con mis amigos</div>
+    <div class="faq-a">Verifica que todos tengan Bluetooth activado y que los Servicios de Ubicacion esten encendidos (es un requisito de Android para usar Bluetooth, no rastreamos tu ubicacion). Tambien asegurense de estar en el mismo squad.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">No recibo mensajes de mi grupo</div>
+    <div class="faq-a">Los mensajes viajan por la red mesh entre dispositivos. Si no hay otros usuarios de Conectx cerca, los mensajes se entregan cuando se reconecten. Si tienes internet, la app sincroniza automaticamente por Firebase.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Como creo un squad?</div>
+    <div class="faq-a">Abre la app, toca "Crear squad", elige un nombre y comparte el codigo con tus amigos. Ellos abren la app, tocan "Unirse" e ingresan el codigo.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">La app gasta mucha bateria?</div>
+    <div class="faq-a">No. Conectx usa Bluetooth Low Energy, que consume menos del 8% de bateria en un partido de 2 horas. Si notas consumo excesivo, escribenos con el modelo de tu telefono.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Funciona entre Android y iPhone?</div>
+    <div class="faq-a">Si. La red mesh conecta dispositivos Android y iPhone en el mismo squad. Ambos usan el mismo protocolo de comunicacion.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Como elimino mi cuenta?</div>
+    <div class="faq-a">Desde la app, ve a Configuracion y selecciona "Eliminar cuenta". Todos tus datos se borran del dispositivo. Si necesitas ayuda, escribenos a hola@conectx.app.</div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-q">Quiero reportar un bug</div>
+    <div class="faq-a">Escribenos a <a href="mailto:hola@conectx.app">hola@conectx.app</a> con una descripcion del problema, tu modelo de telefono y version de la app. Si puedes incluir una captura de pantalla, mejor.</div>
+  </div>
+
+  <h2>Informacion adicional</h2>
+  <ul>
+    <li><a href="/privacidad">Politica de privacidad</a></li>
+    <li><a href="/">Pagina principal</a></li>
+  </ul>
+
+</main>
+
+<footer>
+  <p>Conectx &copy; 2026 &middot; <a href="/">Inicio</a> &middot; <a href="/privacidad">Privacidad</a> &middot; <a href="mailto:hola@conectx.app">hola@conectx.app</a></p>
+</footer>
+
+</body>
+</html>

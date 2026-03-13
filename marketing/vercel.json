@@ -1,6 +1,7 @@
 {
   "rewrites": [
     { "source": "/privacidad", "destination": "/privacidad.html" },
+    { "source": "/soporte", "destination": "/soporte.html" },
     { "source": "/exito", "destination": "/exito.html" },
     { "source": "/stripe/webhook", "destination": "/api/stripe/webhook" },
     { "source": "/api/activation/lookup", "destination": "/api/activation/lookup" }

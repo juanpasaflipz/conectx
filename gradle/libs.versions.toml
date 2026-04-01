@@ -10,6 +10,7 @@ room = "2.6.1"
 nearby = "19.1.0"
 firebase-bom = "32.7.0"
 google-services = "4.4.0"
+crashlytics-plugin = "2.9.9"
 protobuf = "3.25.0"
 tink = "1.12.0"
 datastore = "1.0.0"
@@ -72,6 +73,7 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth-ktx" }
 firebase-database = { group = "com.google.firebase", name = "firebase-database-ktx" }
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 
 # Sync
 protobuf-kotlin = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
@@ -92,3 +94,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics-plugin" }

@@ -1,12 +1,26 @@
 {
   "rules": {
-    ".read": "auth != null",
-    ".write": "auth != null",
     "squads": {
       "$squadId": {
+        "members": {
+          ".read": "auth != null && data.child(auth.uid).exists()",
+          ".write": "auth != null && (data.child(auth.uid).exists() || !data.exists())"
+        },
         "records": {
+          ".read": "auth != null && root.child('squads').child($squadId).child('members').child(auth.uid).exists()",
+          ".write": "auth != null && root.child('squads').child($squadId).child('members').child(auth.uid).exists()",
           ".indexOn": ["lamportClock"]
+        },
+        "meta": {
+          ".read": "auth != null",
+          ".write": "auth != null && root.child('squads').child($squadId).child('members').child(auth.uid).exists()"
         }
+      }
+    },
+    "invites": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.child('createdBy').val() === auth.uid)"
       }
     }
   }

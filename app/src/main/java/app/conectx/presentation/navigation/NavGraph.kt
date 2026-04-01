@@ -12,6 +12,8 @@ import app.conectx.presentation.activation.ActivationScreen
 import app.conectx.presentation.activation.OnboardingScreen
 import app.conectx.presentation.chat.ChatScreen
 import app.conectx.presentation.common.PermissionGate
+import app.conectx.presentation.conversation.ConversationListScreen
+import app.conectx.presentation.conversation.DirectChatScreen
 import app.conectx.presentation.location.LocationScreen
 import app.conectx.presentation.settings.SettingsScreen
 import app.conectx.presentation.squad.SquadListScreen
@@ -64,6 +66,9 @@ fun ConectxNavGraph() {
                     },
                     onUpgrade = {
                         navController.navigate(Screen.Activation.route)
+                    },
+                    onConversationsClick = {
+                        navController.navigate(Screen.ConversationList.route)
                     }
                 )
             }
@@ -90,6 +95,26 @@ fun ConectxNavGraph() {
             val squadId = backStackEntry.arguments?.getString("squadId") ?: return@composable
             LocationScreen(
                 squadId = squadId,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.ConversationList.route) {
+            ConversationListScreen(
+                onConversationSelected = { peerId ->
+                    navController.navigate(Screen.DirectChat.createRoute(peerId))
+                },
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(
+            route = Screen.DirectChat.route,
+            arguments = listOf(navArgument("peerId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val peerId = backStackEntry.arguments?.getString("peerId") ?: return@composable
+            DirectChatScreen(
+                peerId = peerId,
                 onBack = { navController.popBackStack() }
             )
         }

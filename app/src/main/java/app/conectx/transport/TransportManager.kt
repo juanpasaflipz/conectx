@@ -4,6 +4,8 @@ import android.util.Log
 import app.conectx.domain.model.SyncRecord
 import app.conectx.transport.firebase.FirebasePlugin
 import app.conectx.transport.nearby.NearbyPlugin
+import app.conectx.transport.nearby.SyncRecordSerializer
+import app.conectx.transport.wifiaware.WifiAwarePlugin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.merge
 import javax.inject.Inject
@@ -13,8 +15,9 @@ import javax.inject.Singleton
  * Orchestrates transport selection and lifecycle.
  *
  * Priority order (first available wins for sending):
- * 1. Nearby Connections (BT + WiFi mesh) — primary for stadium use
- * 2. Firebase Realtime Database — fallback when internet is available
+ * 1. WiFi Aware — cross-platform (Android + iOS), primary for interop
+ * 2. Nearby Connections (BT + WiFi mesh) — Android-to-Android fallback
+ * 3. Firebase Realtime Database — internet fallback
  *
  * All transports run simultaneously so messages arrive via whichever
  * path is fastest. Dedup happens in the sync layer.
@@ -22,13 +25,14 @@ import javax.inject.Singleton
 @Singleton
 class TransportManager @Inject constructor(
     val nearbyPlugin: NearbyPlugin,
-    val firebasePlugin: FirebasePlugin
+    val firebasePlugin: FirebasePlugin,
+    val wifiAwarePlugin: WifiAwarePlugin
 ) {
     companion object {
         private const val TAG = "TransportManager"
     }
 
-    private val plugins: List<TransportPlugin> = listOf(nearbyPlugin, firebasePlugin)
+    private val plugins: List<TransportPlugin> = listOf(wifiAwarePlugin, nearbyPlugin, firebasePlugin)
 
     val isAnyTransportAvailable: Boolean
         get() = plugins.any { it.isAvailable }
@@ -71,6 +75,7 @@ class TransportManager @Inject constructor(
 
     /**
      * Sends a record via all available transports.
+     * WiFi Aware broadcasts to discovered peers (cross-platform).
      * Nearby broadcasts to all connected peers via mesh.
      * Firebase pushes to RTDB for online squad members.
      * Returns true if at least one transport accepted the record.
@@ -78,13 +83,19 @@ class TransportManager @Inject constructor(
     suspend fun send(record: SyncRecord): Boolean {
         var sent = false
 
-        // Nearby: broadcast to all connected peers
+        // WiFi Aware: broadcast to all discovered peers (cross-platform primary)
+        if (wifiAwarePlugin.isAvailable) {
+            wifiAwarePlugin.broadcast(SyncRecordSerializer.serialize(record))
+            sent = true
+        }
+
+        // Nearby: broadcast to all connected peers (Android-to-Android)
         if (nearbyPlugin.isAvailable) {
             nearbyPlugin.broadcast(record)
             sent = true
         }
 
-        // Firebase: push to RTDB (runs in parallel, doesn't block Nearby)
+        // Firebase: push to RTDB (runs in parallel, doesn't block mesh)
         if (firebasePlugin.isAvailable) {
             try {
                 firebasePlugin.broadcastToFirebase(record)
@@ -95,6 +106,20 @@ class TransportManager @Inject constructor(
         }
 
         return sent
+    }
+
+    /**
+     * Sends raw Envelope bytes to all discovered WiFi Aware peers.
+     * Used for 1:1 E2E encrypted messages.
+     */
+    fun sendEnvelopeToAll(envelopeBytes: ByteArray) {
+        if (wifiAwarePlugin.isAvailable) {
+            // Prefix with envelope type byte
+            val prefixed = ByteArray(envelopeBytes.size + 1)
+            prefixed[0] = 0x02 // PREFIX_ENVELOPE
+            System.arraycopy(envelopeBytes, 0, prefixed, 1, envelopeBytes.size)
+            wifiAwarePlugin.broadcast(prefixed)
+        }
     }
 
     /**

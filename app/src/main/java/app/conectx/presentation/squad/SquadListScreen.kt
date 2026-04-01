@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -53,6 +54,7 @@ fun SquadListScreen(
     onSquadSelected: (String) -> Unit,
     onSettingsClick: () -> Unit,
     onUpgrade: () -> Unit,
+    onConversationsClick: () -> Unit = {},
     viewModel: SquadListViewModel = hiltViewModel()
 ) {
     val squads by viewModel.squads.collectAsState()
@@ -66,6 +68,9 @@ fun SquadListScreen(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
                 actions = {
+                    IconButton(onClick = onConversationsClick) {
+                        Icon(Icons.Default.Email, contentDescription = stringResource(R.string.conversations_title))
+                    }
                     OutlinedButton(onClick = { viewModel.showJoinDialog() }) {
                         Text(stringResource(R.string.squads_join))
                     }

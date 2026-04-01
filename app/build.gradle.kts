@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
+    alias(libs.plugins.protobuf)
 }
 
 import java.util.Properties
@@ -24,8 +25,8 @@ android {
         applicationId = "app.conectx"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
-        versionName = "0.3.0"
+        versionCode = 4
+        versionName = "0.4.0-alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -73,6 +74,21 @@ android {
     }
 }
 
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${libs.versions.protobuf.get()}"
+    }
+    generateProtoTasks {
+        all().forEach { task ->
+            task.builtins {
+                register("java") {
+                    option("lite")
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     // Compose
     val composeBom = platform(libs.compose.bom)
@@ -112,7 +128,7 @@ dependencies {
     implementation(libs.hilt.work)
     ksp(libs.hilt.work.compiler)
 
-    // P2P Transport
+    // P2P Transport — Nearby Connections (Android-to-Android, retained)
     implementation(libs.nearby.connections)
 
     // Firebase
@@ -122,11 +138,11 @@ dependencies {
     implementation(libs.firebase.messaging)
     implementation(libs.firebase.crashlytics)
 
-    // Protobuf
-    implementation(libs.protobuf.kotlin)
+    // Protobuf — canonical wire format (javalite runtime)
+    implementation(libs.protobuf.javalite)
 
-    // Crypto
-    implementation(libs.tink)
+    // Crypto — Signal Protocol E2E encryption (replaces Tink)
+    implementation(libs.libsignal.android)
 
     // Testing
     testImplementation(libs.junit)

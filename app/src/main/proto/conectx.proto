@@ -1,0 +1,51 @@
+// Canonical Conectx wire format — shared by Android and iOS.
+// Source of truth: CON-2 architecture plan §4.
+//
+// Both platforms MUST build from this same .proto file to guarantee
+// wire-level interoperability.
+
+syntax = "proto3";
+package conectx;
+
+option java_package = "app.conectx.proto";
+option java_multiple_files = true;
+
+// Top-level message envelope sent over WiFi Aware / BLE.
+// All fields except ciphertext and signature are in the clear
+// so the transport layer can route without decrypting.
+message Envelope {
+  bytes sender_id = 1;        // 32-byte Ed25519 identity public key
+  bytes recipient_id = 2;     // 32-byte Ed25519 identity public key (empty for broadcast)
+  uint64 timestamp = 3;       // Unix milliseconds
+  bytes nonce = 4;            // 12-byte random nonce
+  bytes ciphertext = 5;       // Signal Protocol encrypted payload
+  uint32 message_type = 6;    // 1=text, 2=receipt, 3=keyExchange
+  bytes signature = 7;        // Ed25519 signature over fields 1-6
+  uint32 ttl = 8;             // Hop count for relay (max 7)
+  bytes message_id = 9;       // 16-byte UUID for deduplication
+}
+
+// Plaintext payload for text messages (encrypted inside Envelope.ciphertext).
+message TextPayload {
+  string text = 1;
+  string reply_to_id = 2;     // Optional: message_id being replied to
+}
+
+// Pre-key bundle exchanged during BLE/WiFi Aware discovery for
+// serverless X3DH key agreement.
+message PreKeyBundle {
+  bytes identity_key = 1;     // Ed25519 identity public key
+  uint32 signed_pre_key_id = 2;
+  bytes signed_pre_key = 3;   // X25519 signed pre-key
+  bytes signed_pre_key_signature = 4;
+  uint32 one_time_pre_key_id = 5;
+  bytes one_time_pre_key = 6; // X25519 one-time pre-key (optional)
+  uint32 registration_id = 7;
+  string display_name = 8;    // Human-readable username for peer display
+}
+
+// Delivery/read receipt payload.
+message ReceiptPayload {
+  bytes message_id = 1;
+  uint32 receipt_type = 2;    // 1=delivered, 2=read
+}

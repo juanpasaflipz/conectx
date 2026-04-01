@@ -3,7 +3,10 @@ package app.conectx.di
 import android.content.Context
 import androidx.room.Room
 import app.conectx.data.local.db.ConectxDatabase
+import app.conectx.data.local.db.dao.ConversationDao
+import app.conectx.data.local.db.dao.DirectMessageDao
 import app.conectx.data.local.db.dao.MessageDao
+import app.conectx.data.local.db.dao.SignalDao
 import app.conectx.data.local.db.dao.SquadDao
 import app.conectx.data.local.db.dao.SyncRecordDao
 import dagger.Module
@@ -24,7 +27,8 @@ object DatabaseModule {
             context,
             ConectxDatabase::class.java,
             "conectx.db"
-        ).build()
+        ).fallbackToDestructiveMigration()
+        .build()
     }
 
     @Provides
@@ -35,4 +39,13 @@ object DatabaseModule {
 
     @Provides
     fun provideSyncRecordDao(db: ConectxDatabase): SyncRecordDao = db.syncRecordDao()
+
+    @Provides
+    fun provideSignalDao(db: ConectxDatabase): SignalDao = db.signalDao()
+
+    @Provides
+    fun provideConversationDao(db: ConectxDatabase): ConversationDao = db.conversationDao()
+
+    @Provides
+    fun provideDirectMessageDao(db: ConectxDatabase): DirectMessageDao = db.directMessageDao()
 }

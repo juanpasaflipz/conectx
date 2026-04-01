@@ -247,6 +247,55 @@ class CrossPlatformInteropTest {
     }
 
     @Test
+    fun `PreKeyBundle with display name round-trips`() {
+        val bundle = PreKeyBundle.newBuilder()
+            .setIdentityKey(ByteString.copyFrom(aliceIdentityKey))
+            .setSignedPreKeyId(1)
+            .setSignedPreKey(ByteString.copyFrom(ByteArray(33)))
+            .setSignedPreKeySignature(ByteString.copyFrom(ByteArray(64)))
+            .setRegistrationId(1234)
+            .setDisplayName("Alice")
+            .build()
+
+        val bytes = bundle.toByteArray()
+        val reparsed = PreKeyBundle.parseFrom(bytes)
+
+        assertEquals("Alice", reparsed.displayName)
+        assertArrayEquals(aliceIdentityKey, reparsed.identityKey.toByteArray())
+    }
+
+    @Test
+    fun `PreKeyBundle without display name defaults to empty string`() {
+        val bundle = PreKeyBundle.newBuilder()
+            .setIdentityKey(ByteString.copyFrom(aliceIdentityKey))
+            .setSignedPreKeyId(1)
+            .setSignedPreKey(ByteString.copyFrom(ByteArray(33)))
+            .setSignedPreKeySignature(ByteString.copyFrom(ByteArray(64)))
+            .setRegistrationId(1234)
+            // Omit display_name
+            .build()
+
+        val reparsed = PreKeyBundle.parseFrom(bundle.toByteArray())
+        assertEquals("", reparsed.displayName) // proto3 default
+    }
+
+    @Test
+    fun `PreKeyBundle display name preserves unicode`() {
+        val name = "Carlos Garc\u00eda \uD83C\uDDF2\uD83C\uDDFD"
+        val bundle = PreKeyBundle.newBuilder()
+            .setIdentityKey(ByteString.copyFrom(aliceIdentityKey))
+            .setSignedPreKeyId(1)
+            .setSignedPreKey(ByteString.copyFrom(ByteArray(33)))
+            .setSignedPreKeySignature(ByteString.copyFrom(ByteArray(64)))
+            .setRegistrationId(1234)
+            .setDisplayName(name)
+            .build()
+
+        val reparsed = PreKeyBundle.parseFrom(bundle.toByteArray())
+        assertEquals(name, reparsed.displayName)
+    }
+
+    @Test
     fun `PreKeyBundle without one-time key is valid`() {
         val bundle = PreKeyBundle.newBuilder()
             .setIdentityKey(ByteString.copyFrom(aliceIdentityKey))

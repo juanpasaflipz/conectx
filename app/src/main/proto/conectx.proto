@@ -41,6 +41,7 @@ message PreKeyBundle {
   uint32 one_time_pre_key_id = 5;
   bytes one_time_pre_key = 6; // X25519 one-time pre-key (optional)
   uint32 registration_id = 7;
+  string display_name = 8;    // Human-readable username for peer display
 }
 
 // Delivery/read receipt payload.

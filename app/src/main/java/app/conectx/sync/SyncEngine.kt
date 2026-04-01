@@ -380,12 +380,16 @@ class SyncEngine @Inject constructor(
             signalManager.processPreKeyBundle(peerAddress, bundle)
             knownPeers[peerAddress] = proto.identityKey.toByteArray()
 
+            // Use display name from bundle if present, otherwise fall back to hex prefix
+            val displayName = proto.displayName.ifBlank { peerAddress.take(8) }
+
             // Create or update conversation for this peer
-            if (conversationDao.getConversation(peerAddress) == null) {
+            val existing = conversationDao.getConversation(peerAddress)
+            if (existing == null) {
                 conversationDao.upsert(
                     ConversationEntity(
                         peerId = peerAddress,
-                        peerDisplayName = peerAddress.take(8),
+                        peerDisplayName = displayName,
                         peerIdentityKey = proto.identityKey.toByteArray(),
                         lastMessageText = null,
                         lastMessageTimestamp = System.currentTimeMillis(),
@@ -393,6 +397,9 @@ class SyncEngine @Inject constructor(
                         createdAt = System.currentTimeMillis()
                     )
                 )
+            } else if (displayName != peerAddress.take(8) && existing.peerDisplayName == peerAddress.take(8)) {
+                // Upgrade from hex prefix to real display name
+                conversationDao.updateDisplayName(peerAddress, displayName)
             }
 
             Log.d(TAG, "Processed pre-key bundle from $peerAddress — session established")
@@ -499,6 +506,7 @@ class SyncEngine @Inject constructor(
                 bundle.signedPreKeySignature
             ))
             .setRegistrationId(bundle.registrationId)
+            .setDisplayName(localUserName)
 
         if (bundle.preKeyId >= 0 && bundle.preKey != null) {
             proto.setOneTimePreKeyId(bundle.preKeyId)

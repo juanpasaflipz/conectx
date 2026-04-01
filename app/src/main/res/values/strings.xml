@@ -116,6 +116,14 @@
     <string name="member_limit_message">Este squad ya tiene el maximo de miembros para tu plan. Mejora a Pase Mundial para hasta 25 miembros por squad.</string>
     <string name="upgrade_button">Mejorar</string>
 
+    <!-- Conversations (1:1 E2E) -->
+    <string name="conversations_title">Mensajes</string>
+    <string name="conversations_empty">No hay conversaciones aun.\nConecta con alguien cercano para chatear.</string>
+    <string name="conversations_wifi_aware">WiFi Aware activo</string>
+    <string name="conversations_wifi_aware_off">WiFi Aware no disponible</string>
+    <string name="conversations_no_session">Aun no hay sesion segura con este contacto</string>
+    <string name="direct_chat_encrypted">Cifrado de extremo a extremo</string>
+
     <!-- Common -->
     <string name="cancel">Cancelar</string>
     <string name="ok">OK</string>

@@ -1,6 +1,7 @@
 package app.conectx.sync
 
 import android.util.Log
+import app.conectx.crypto.SignalSessionManager
 import app.conectx.data.local.db.dao.SyncRecordDao
 import app.conectx.data.local.db.entity.SyncRecordEntity
 import app.conectx.domain.model.Peer
@@ -14,8 +15,8 @@ import java.util.UUID
  *
  * When a new peer connects, the SyncEngine creates a session and calls
  * [sendOffer]. This broadcasts a SYNC_OFFER containing our latest
- * Lamport clock for every squad we know about, plus our Ed25519 public
- * key so peers can verify our future messages.
+ * Lamport clock for every squad we know about, plus our Signal Protocol
+ * identity public key so peers can identify us for E2E sessions.
  *
  * This class is NOT a singleton — one instance per peer connection.
  */
@@ -25,7 +26,7 @@ class SyncSession(
     private val syncRecordDao: SyncRecordDao,
     private val transportManager: TransportManager,
     private val localUserId: String,
-    private val cryptoManager: CryptoManager? = null
+    private val signalManager: SignalSessionManager? = null
 ) {
     companion object {
         private const val TAG = "SyncSession"
@@ -34,7 +35,7 @@ class SyncSession(
     /**
      * Sends a SYNC_OFFER to the mesh. Our latest clock per squad is
      * encoded in the payload so peers know what we already have.
-     * Our Ed25519 public key is included so peers can verify our signatures.
+     * Our Signal identity public key is included for peer identification.
      */
     suspend fun sendOffer() {
         val squadClocks = lamportClock.allClocks()
@@ -43,7 +44,7 @@ class SyncSession(
             return
         }
 
-        val publicKey = cryptoManager?.getPublicKeyBytes() ?: ByteArray(0)
+        val publicKey = signalManager?.getIdentityPublicKey() ?: ByteArray(0)
 
         val offer = SyncRecord(
             id = UUID.randomUUID().toString(),

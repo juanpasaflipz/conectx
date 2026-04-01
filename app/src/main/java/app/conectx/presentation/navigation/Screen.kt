@@ -11,4 +11,8 @@ sealed class Screen(val route: String) {
         fun createRoute(squadId: String) = "location/$squadId"
     }
     data object Settings : Screen("settings")
+    data object ConversationList : Screen("conversations")
+    data object DirectChat : Screen("direct_chat/{peerId}") {
+        fun createRoute(peerId: String) = "direct_chat/$peerId"
+    }
 }

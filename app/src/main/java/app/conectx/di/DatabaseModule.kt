@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import app.conectx.data.local.db.ConectxDatabase
 import app.conectx.data.local.db.dao.ConversationDao
+import app.conectx.data.local.db.dao.DirectMessageDao
 import app.conectx.data.local.db.dao.MessageDao
 import app.conectx.data.local.db.dao.SignalDao
 import app.conectx.data.local.db.dao.SquadDao
@@ -44,4 +45,7 @@ object DatabaseModule {
 
     @Provides
     fun provideConversationDao(db: ConectxDatabase): ConversationDao = db.conversationDao()
+
+    @Provides
+    fun provideDirectMessageDao(db: ConectxDatabase): DirectMessageDao = db.directMessageDao()
 }

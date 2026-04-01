@@ -109,6 +109,20 @@ class TransportManager @Inject constructor(
     }
 
     /**
+     * Sends raw Envelope bytes to all discovered WiFi Aware peers.
+     * Used for 1:1 E2E encrypted messages.
+     */
+    fun sendEnvelopeToAll(envelopeBytes: ByteArray) {
+        if (wifiAwarePlugin.isAvailable) {
+            // Prefix with envelope type byte
+            val prefixed = ByteArray(envelopeBytes.size + 1)
+            prefixed[0] = 0x02 // PREFIX_ENVELOPE
+            System.arraycopy(envelopeBytes, 0, prefixed, 1, envelopeBytes.size)
+            wifiAwarePlugin.broadcast(prefixed)
+        }
+    }
+
+    /**
      * Subscribe the Firebase plugin to a squad's RTDB records.
      * Call when the user creates or joins a squad.
      */

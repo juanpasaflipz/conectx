@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Como Funciona el Mesh Networking: Comunicacion sin Internet Explicada</title>
+  <meta name="description" content="Que es mesh networking y como funciona? Te explicamos en terminos simples como Bluetooth y WiFi Direct permiten que tu celular se comunique sin internet, sin torres y sin WiFi." />
+  <link rel="canonical" href="https://www.conectx.app/blog/como-funciona-mesh-networking" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.conectx.app/blog/como-funciona-mesh-networking" />
+  <meta property="og:title" content="Como Funciona el Mesh Networking: Comunicacion sin Internet" />
+  <meta property="og:description" content="Explicacion simple de como funcionan las redes mesh, Bluetooth y WiFi Direct para comunicarse sin internet en estadios y eventos masivos." />
+  <meta property="og:image" content="https://www.conectx.app/icons/og/blog-mesh.png" />
+  <meta property="og:locale" content="es_MX" />
+  <meta property="og:site_name" content="Conectx" />
+  <meta property="article:published_time" content="2026-03-13T12:00:00-06:00" />
+  <meta property="article:tag" content="Mesh Networking" />
+  <meta property="article:tag" content="Bluetooth" />
+  <meta property="article:tag" content="Tecnologia" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Como Funciona el Mesh Networking" />
+  <meta name="twitter:description" content="Explicacion simple de redes mesh, Bluetooth y WiFi Direct para comunicacion sin internet." />
+  <meta name="twitter:image" content="https://www.conectx.app/icons/og/blog-mesh.png" />
+
+  <meta name="theme-color" content="#0a2e1a" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/playstore-icon-512.png" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Como Funciona el Mesh Networking: Comunicacion sin Internet Explicada",
+    "description": "Explicacion simple de como funcionan las redes mesh, Bluetooth y WiFi Direct para comunicarse sin internet.",
+    "image": "https://www.conectx.app/icons/og/blog-mesh.png",
+    "author": {
+      "@type": "Organization",
+      "name": "Conectx",
+      "url": "https://www.conectx.app"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Conectx",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.conectx.app/icons/playstore-icon-512.png"
+      }
+    },
+    "datePublished": "2026-03-13",
+    "dateModified": "2026-03-13",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://www.conectx.app/blog/como-funciona-mesh-networking"
+    }
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #0a2e1a;
+      --green-mid: #145a32;
+      --green-bright: #27ae60;
+      --gold: #f4d03f;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-200: #e5e5e5;
+      --gray-600: #525252;
+      --gray-800: #262626;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--gray-800);
+      line-height: 1.8;
+      background: var(--white);
+    }
+    header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: var(--white);
+      padding: 2rem 1.5rem;
+    }
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .logo { font-size: 1.4rem; font-weight: 800; color: var(--white); text-decoration: none; }
+    .logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--white); }
+    article {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+    .article-meta {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      margin-bottom: 1.5rem;
+    }
+    .article-tag {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-right: 0.5rem;
+    }
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      letter-spacing: -0.02em;
+    }
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--green-dark);
+    }
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+    p { font-size: 1rem; color: var(--gray-600); margin-bottom: 1.25rem; }
+    ul, ol { padding-left: 1.5rem; margin-bottom: 1.25rem; }
+    li { font-size: 1rem; color: var(--gray-600); margin-bottom: 0.5rem; }
+    strong { color: var(--gray-800); }
+    a { color: var(--green-bright); }
+    .highlight-box {
+      background: var(--gray-50);
+      border-left: 4px solid var(--green-bright);
+      padding: 1.25rem 1.5rem;
+      margin: 2rem 0;
+      border-radius: 0 12px 12px 0;
+    }
+    .highlight-box p { margin-bottom: 0; font-weight: 500; }
+    .diagram-box {
+      background: var(--gray-50);
+      border-radius: 16px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      overflow-x: auto;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      color: var(--white);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      margin: 3rem 0;
+    }
+    .cta-box h3 { color: var(--white); margin-top: 0; font-size: 1.3rem; }
+    .cta-box p { color: rgba(255,255,255,0.85); }
+    .cta-box a {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--green-dark);
+      padding: 0.9rem 2rem;
+      border-radius: 60px;
+      font-weight: 700;
+      text-decoration: none;
+      margin-top: 0.5rem;
+    }
+    /* ─── SHARE BAR ─── */
+    .share-bar {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 2rem 0;
+      padding: 1.25rem 0;
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .share-bar .share-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-right: 0.25rem;
+    }
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .share-btn:hover { opacity: 0.85; }
+    .share-btn.x { background: #000; color: #fff; }
+    .share-btn.fb { background: #1877f2; color: #fff; }
+    .share-btn.wa { background: #25d366; color: #fff; }
+    .share-btn.copy { background: var(--gray-50); color: var(--gray-800); border: 1px solid var(--gray-200); }
+    .share-btn.copy.copied { background: var(--green-bright); color: #fff; border-color: var(--green-bright); }
+    .share-btn svg { width: 16px; height: 16px; fill: currentColor; }
+    .breadcrumb {
+      font-size: 0.85rem;
+      color: var(--gray-600);
+      margin-bottom: 1.5rem;
+    }
+    .breadcrumb a { color: var(--green-bright); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      font-size: 0.85rem;
+      color: var(--gray-600);
+    }
+    footer a { color: var(--gray-600); text-decoration: none; }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      article { padding: 2rem 1rem 3rem; }
+      .diagram-box { font-size: 0.7rem; padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="header-nav">
+    <a href="/" class="logo">Conect<span>x</span></a>
+    <div class="nav-links">
+      <a href="/">Inicio</a>
+      <a href="/blog">Blog</a>
+      <a href="/soporte">Soporte</a>
+    </div>
+  </nav>
+</header>
+
+<article>
+  <div class="breadcrumb">
+    <a href="/">Inicio</a> &rsaquo; <a href="/blog">Blog</a> &rsaquo; Como funciona el Mesh Networking
+  </div>
+
+  <div class="article-meta">
+    <span class="article-tag">Tecnologia</span>
+    <span class="article-tag">Mesh</span>
+    <br /><br />
+    13 de marzo, 2026 &middot; 8 min de lectura
+  </div>
+
+  <h1>Como Funciona el Mesh Networking: la Tecnologia detras de la Comunicacion sin Internet</h1>
+
+  <div class="share-bar">
+    <span class="share-label">Compartir:</span>
+    <a class="share-btn x" href="https://twitter.com/intent/tweet?text=C%C3%B3mo%20funciona%20el%20Mesh%20Networking%3A%20la%20tecnolog%C3%ADa%20detr%C3%A1s%20de%20la%20comunicaci%C3%B3n%20sin%20internet&url=https%3A%2F%2Fwww.conectx.app%2Fblog%2Fcomo-funciona-mesh-networking" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      X
+    </a>
+    <a class="share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.conectx.app%2Fblog%2Fcomo-funciona-mesh-networking" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Facebook
+    </a>
+    <a class="share-btn wa" href="https://api.whatsapp.com/send?text=C%C3%B3mo%20funciona%20el%20Mesh%20Networking%20%F0%9F%93%A1%20https%3A%2F%2Fwww.conectx.app%2Fblog%2Fcomo-funciona-mesh-networking" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp
+    </a>
+    <button class="share-btn copy" onclick="copyLink(this)">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+      Copiar link
+    </button>
+  </div>
+
+  <p>
+    Cuando escuchas "mesh networking" o "red mesh", suena a algo complicado y tecnico. Pero el concepto es sorprendentemente simple: <strong>en vez de depender de una torre central (como Telcel o AT&T), cada dispositivo se conecta directamente con los demas</strong>.
+  </p>
+
+  <p>
+    Es la misma idea que pasar una nota en clase: si no puedes llegar directamente al destinatario, le pides a los de en medio que la pasen.
+  </p>
+
+  <h2>Internet normal vs. Mesh Networking</h2>
+
+  <h3>Como funciona internet normalmente</h3>
+  <p>
+    Cuando mandas un WhatsApp, tu mensaje sale de tu telefono, llega a la torre de celular mas cercana (de Telcel, AT&T, etc.), viaja por internet hasta los servidores de WhatsApp, y de ahi llega al telefono de tu amigo — tambien a traves de una torre.
+  </p>
+
+  <div class="diagram-box">
+    Tu telefono &rarr; Torre de celular &rarr; Internet &rarr; Servidores de WhatsApp &rarr; Internet &rarr; Torre de celular &rarr; Telefono de tu amigo
+  </div>
+
+  <p>
+    Si cualquier parte de esa cadena falla — la torre esta saturada, no hay internet, los servidores estan caidos — <strong>tu mensaje no llega</strong>.
+  </p>
+
+  <h3>Como funciona mesh networking</h3>
+  <p>
+    En una red mesh, tu telefono se conecta <strong>directamente</strong> con los telefonos cercanos usando Bluetooth o WiFi Direct. No hay torre, no hay internet, no hay servidor.
+  </p>
+
+  <div class="diagram-box">
+    Tu telefono &harr; Telefono de tu amigo<br /><br />
+    (conexion directa por Bluetooth / WiFi Direct)
+  </div>
+
+  <p>
+    Y si tu amigo esta lejos, el mensaje puede <strong>saltar entre dispositivos intermedios</strong>:
+  </p>
+
+  <div class="diagram-box">
+    Tu telefono &rarr; Telefono de Juan &rarr; Telefono de Maria &rarr; Telefono de tu amigo<br /><br />
+    (cada dispositivo retransmite el mensaje — "mesh hop")
+  </div>
+
+  <div class="highlight-box">
+    <p><strong>Analogia simple:</strong> Imagina que estas en un estadio y quieres mandarle un mensaje a un amigo que esta 10 filas mas arriba. Le pasas el mensaje a la persona de al lado, esa persona se lo pasa a la siguiente, y asi hasta que llega a tu amigo. Eso es mesh networking, pero automatizado y digital.</p>
+  </div>
+
+  <h2>Las tecnologias que lo hacen posible</h2>
+
+  <h3>Bluetooth Low Energy (BLE)</h3>
+  <p>
+    El <strong>Bluetooth de tu celular</strong> no solo sirve para conectar audifonos. Bluetooth Low Energy (BLE) permite enviar pequenos paquetes de datos entre dispositivos cercanos con un consumo minimo de bateria.
+  </p>
+  <ul>
+    <li><strong>Alcance:</strong> 10 a 30 metros en interior, hasta 100 metros en exterior</li>
+    <li><strong>Consumo:</strong> Muy bajo — menos del 8% de bateria en 2 horas de uso continuo</li>
+    <li><strong>Compatibilidad:</strong> Todos los celulares modernos (Android y iPhone) tienen BLE</li>
+    <li><strong>Limitacion:</strong> Velocidad baja — ideal para texto, no para fotos o video</li>
+  </ul>
+
+  <h3>WiFi Direct</h3>
+  <p>
+    WiFi Direct permite que dos dispositivos se conecten por WiFi <strong>sin necesitar un router</strong>. Es mas rapido que Bluetooth pero consume mas bateria.
+  </p>
+  <ul>
+    <li><strong>Alcance:</strong> Hasta 200 metros en condiciones ideales</li>
+    <li><strong>Velocidad:</strong> Mucho mas rapido que BLE (hasta 250 Mbps)</li>
+    <li><strong>Consumo:</strong> Mas alto que BLE, pero aceptable para sesiones cortas</li>
+    <li><strong>Limitacion:</strong> No todos los dispositivos lo soportan igual</li>
+  </ul>
+
+  <h3>Google Nearby Connections</h3>
+  <p>
+    Es una API de Google que <strong>combina Bluetooth y WiFi</strong> automaticamente para establecer la mejor conexion posible entre dispositivos Android. Selecciona el canal optimo segun la distancia y condiciones.
+  </p>
+
+  <h2>Mesh Networking en la practica: estadios y eventos</h2>
+
+  <p>
+    Los estadios son el caso de uso <strong>perfecto</strong> para mesh networking porque:
+  </p>
+
+  <ol>
+    <li><strong>Alta densidad de personas:</strong> Mas dispositivos = mas nodos en la red mesh = mejor cobertura</li>
+    <li><strong>Distancias cortas:</strong> En un estadio, las personas estan a pocos metros entre si — perfecto para Bluetooth</li>
+    <li><strong>Red celular saturada:</strong> La alternativa (internet) no funciona, asi que mesh es la unica opcion</li>
+    <li><strong>Necesidad de comunicacion simple:</strong> En un estadio necesitas texto corto ("donde estas?") y ubicacion, no video — perfecto para BLE</li>
+  </ol>
+
+  <p>
+    En teoria, en un estadio con 87,000 personas y el 5% usando una app de mesh, tendrias <strong>4,350 nodos</strong> formando la red. Un mensaje podria llegar de un extremo del estadio al otro saltando entre nodos.
+  </p>
+
+  <h2>Seguridad en redes mesh</h2>
+
+  <p>
+    Una preocupacion comun: <strong>si mi mensaje salta entre telefonos de desconocidos, lo pueden leer?</strong>
+  </p>
+
+  <p>
+    La respuesta es <strong>no</strong>, si la app usa cifrado de extremo a extremo. Asi funciona:
+  </p>
+
+  <ul>
+    <li>Cada dispositivo genera un par de claves criptograficas (publica y privada)</li>
+    <li>Tu mensaje se cifra con la clave publica del destinatario</li>
+    <li>Solo el dispositivo del destinatario tiene la clave privada para descifrar</li>
+    <li>Los nodos intermedios solo retransmiten datos cifrados — no pueden leerlos</li>
+  </ul>
+
+  <p>
+    Apps como <a href="https://www.conectx.app">Conectx</a> usan <strong>Ed25519</strong> para firmar cada mensaje, lo que verifica que el mensaje realmente viene de quien dice ser y no fue alterado en el camino.
+  </p>
+
+  <h2>Limitaciones del Mesh Networking</h2>
+
+  <p>
+    Es importante ser honesto sobre las limitaciones:
+  </p>
+
+  <ul>
+    <li><strong>Solo texto y datos pequenos.</strong> No puedes enviar fotos, videos ni hacer llamadas por mesh. La velocidad de BLE es limitada.</li>
+    <li><strong>Necesita otros usuarios cerca.</strong> Si estas solo en un desierto, mesh no funciona. Necesita densidad de dispositivos.</li>
+    <li><strong>Latencia variable.</strong> Un mensaje que salta por 5 nodos puede tardar unos segundos mas que una conexion directa.</li>
+    <li><strong>Alcance depende de la densidad.</strong> Si no hay suficientes nodos entre tu y el destinatario, el mensaje no puede llegar.</li>
+  </ul>
+
+  <p>
+    Por eso las mejores apps de mesh, como Conectx, tambien usan <strong>internet como respaldo</strong> cuando esta disponible. La app cambia automaticamente entre mesh (cuando no hay señal) e internet (cuando hay señal). Tu no tienes que hacer nada.
+  </p>
+
+  <h2>El futuro del Mesh Networking</h2>
+
+  <p>
+    Mesh networking no es solo para estadios. La tecnologia tiene aplicaciones en:
+  </p>
+
+  <ul>
+    <li><strong>Desastres naturales:</strong> Cuando la infraestructura celular se cae, mesh permite comunicacion de emergencia</li>
+    <li><strong>Zonas rurales:</strong> Comunidades sin cobertura celular pueden crear su propia red</li>
+    <li><strong>Festivales y conciertos:</strong> Cualquier evento masivo tiene el mismo problema de saturacion</li>
+    <li><strong>Protestas:</strong> Comunicacion resistente a censura, sin depender de infraestructura central</li>
+  </ul>
+
+  <p>
+    Con cada generacion de Bluetooth (5.0, 5.1, 5.2, 5.3, 5.4) el alcance y la velocidad mejoran. <strong>En pocos anos, mesh networking podria ser una capa de comunicacion tan comun como WiFi.</strong>
+  </p>
+
+  <div class="cta-box">
+    <h3>Prueba mesh networking en tu celular</h3>
+    <p>Conectx usa Bluetooth y WiFi mesh para que chatees con tu grupo sin internet. Descargala gratis y pruebala con tus amigos.</p>
+    <a href="https://www.conectx.app">Descargar Conectx gratis &rarr;</a>
+  </div>
+
+  <div class="share-bar">
+    <span class="share-label">Compartir este articulo:</span>
+    <a class="share-btn x" href="https://twitter.com/intent/tweet?text=C%C3%B3mo%20funciona%20el%20Mesh%20Networking%3A%20la%20tecnolog%C3%ADa%20detr%C3%A1s%20de%20la%20comunicaci%C3%B3n%20sin%20internet&url=https%3A%2F%2Fwww.conectx.app%2Fblog%2Fcomo-funciona-mesh-networking" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      X
+    </a>
+    <a class="share-btn fb" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.conectx.app%2Fblog%2Fcomo-funciona-mesh-networking" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+      Facebook
+    </a>
+    <a class="share-btn wa" href="https://api.whatsapp.com/send?text=C%C3%B3mo%20funciona%20el%20Mesh%20Networking%20%F0%9F%93%A1%20https%3A%2F%2Fwww.conectx.app%2Fblog%2Fcomo-funciona-mesh-networking" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp
+    </a>
+    <button class="share-btn copy" onclick="copyLink(this)">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+      Copiar link
+    </button>
+  </div>
+
+</article>
+
+<script>
+function copyLink(btn) {
+  navigator.clipboard.writeText(window.location.href).then(function() {
+    btn.classList.add('copied');
+    btn.querySelector('svg').nextSibling.textContent = ' Copiado!';
+    setTimeout(function() {
+      btn.classList.remove('copied');
+      btn.querySelector('svg').nextSibling.textContent = ' Copiar link';
+    }, 2000);
+  });
+}
+</script>
+
+<footer>
+  <p>Conectx &copy; 2026 &middot; <a href="/">Inicio</a> &middot; <a href="/blog">Blog</a> &middot; <a href="/privacidad">Privacidad</a> &middot; <a href="mailto:hola@conectx.app">hola@conectx.app</a></p>
+</footer>
+
+</body>
+</html>

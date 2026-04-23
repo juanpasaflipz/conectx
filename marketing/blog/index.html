@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog — Conectx | Chat sin Internet, Mesh Networking y Mundial 2026</title>
+  <meta name="description" content="Articulos sobre comunicacion sin internet, mesh networking, Bluetooth, y como mantenerte conectado en el Mundial 2026 y eventos masivos en Mexico." />
+  <link rel="canonical" href="https://www.conectx.app/blog" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.conectx.app/blog" />
+  <meta property="og:title" content="Blog — Conectx | Chat sin Internet y Mesh Networking" />
+  <meta property="og:description" content="Articulos sobre comunicacion sin internet, mesh networking, y como mantenerte conectado en el Mundial 2026." />
+  <meta property="og:image" content="https://www.conectx.app/icons/og/blog-index.png" />
+  <meta property="og:locale" content="es_MX" />
+  <meta property="og:site_name" content="Conectx" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Blog — Conectx" />
+  <meta name="twitter:description" content="Articulos sobre chat sin internet, mesh networking y eventos masivos." />
+  <meta name="twitter:image" content="https://www.conectx.app/icons/og/blog-index.png" />
+
+  <meta name="theme-color" content="#0a2e1a" />
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/playstore-icon-512.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green-dark: #0a2e1a;
+      --green-mid: #145a32;
+      --green-bright: #27ae60;
+      --gold: #f4d03f;
+      --white: #ffffff;
+      --gray-50: #fafafa;
+      --gray-200: #e5e5e5;
+      --gray-600: #525252;
+      --gray-800: #262626;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--gray-800);
+      line-height: 1.7;
+      background: var(--white);
+    }
+    header {
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: var(--white);
+      padding: 2rem 1.5rem 3rem;
+      text-align: center;
+    }
+    .header-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 900px;
+      margin: 0 auto 2rem;
+    }
+    .logo { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; color: var(--white); text-decoration: none; }
+    .logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 1.5rem; }
+    .nav-links a { color: rgba(255,255,255,0.8); text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+    .nav-links a:hover { color: var(--white); }
+    header h1 { font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; margin-bottom: 0.5rem; }
+    header p { opacity: 0.8; font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+    .articles { display: grid; gap: 2rem; }
+    .article-card {
+      border: 1px solid var(--gray-200);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .article-card:hover {
+      border-color: var(--green-bright);
+      box-shadow: 0 4px 20px rgba(39, 174, 96, 0.1);
+    }
+    .article-tag {
+      display: inline-block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .article-card h2 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.01em;
+    }
+    .article-card h2 a {
+      color: var(--gray-800);
+      text-decoration: none;
+    }
+    .article-card h2 a:hover { color: var(--green-mid); }
+    .article-card p {
+      font-size: 0.95rem;
+      color: var(--gray-600);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .article-meta {
+      font-size: 0.8rem;
+      color: #999;
+    }
+    .read-more {
+      color: var(--green-bright);
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .read-more:hover { text-decoration: underline; }
+    footer {
+      text-align: center;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      font-size: 0.85rem;
+      color: var(--gray-600);
+    }
+    footer a { color: var(--gray-600); text-decoration: none; }
+    footer a:hover { color: var(--gray-800); }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .article-card { padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <nav class="header-nav">
+    <a href="/" class="logo">Conect<span>x</span></a>
+    <div class="nav-links">
+      <a href="/">Inicio</a>
+      <a href="/#como-funciona">Como funciona</a>
+      <a href="/soporte">Soporte</a>
+    </div>
+  </nav>
+  <h1>Blog de Conectx</h1>
+  <p>Todo sobre comunicacion sin internet, mesh networking, y como prepararte para el Mundial 2026 en Mexico.</p>
+</header>
+
+<main>
+  <div class="articles">
+
+    <article class="article-card">
+      <span class="article-tag">Problema</span>
+      <h2><a href="/blog/whatsapp-no-manda-fotos-en-estadio">WhatsApp no manda fotos en el estadio: por que pasa</a></h2>
+      <p>Respuesta directa a un fallo muy concreto y frecuente: por que las fotos son de lo primero que deja de funcionar en un venue lleno.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 5 min de lectura</span>
+      <br /><br />
+      <a href="/blog/whatsapp-no-manda-fotos-en-estadio" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Problema</span>
+      <h2><a href="/blog/no-puedo-llamar-en-concierto">No puedo llamar en un concierto: por que pasa y que hacer</a></h2>
+      <p>Una guia practica para quienes descubren que las llamadas tampoco sirven cuando el venue esta saturado y lleno de ruido.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 5 min de lectura</span>
+      <br /><br />
+      <a href="/blog/no-puedo-llamar-en-concierto" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Festival</span>
+      <h2><a href="/blog/como-encontrar-a-mis-amigos-en-festival">Como encontrar a mis amigos en un festival sin senal</a></h2>
+      <p>Busqueda de alta intencion para quienes ya se separaron o quieren prepararse mejor antes del festival.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/como-encontrar-a-mis-amigos-en-festival" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Producto</span>
+      <h2><a href="/blog/mejor-app-para-fan-zones">Mejor app para fan zones: que debes buscar</a></h2>
+      <p>Una guia de comparacion ligera para usuarios que quieren una app util en fan zones y eventos de futbol con red inestable.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/mejor-app-para-fan-zones" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Problema</span>
+      <h2><a href="/blog/roaming-no-funciona-en-conciertos">Roaming no funciona en conciertos: por que pasa y que hacer</a></h2>
+      <p>Post orientado a visitantes y turistas que descubren demasiado tarde que el roaming no resuelve la saturacion del venue.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/roaming-no-funciona-en-conciertos" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Problema</span>
+      <h2><a href="/blog/ubicacion-en-vivo-no-carga-en-estadio">Ubicacion en vivo no carga en el estadio: por que y que hacer</a></h2>
+      <p>Respuesta directa para quien ya descubrio que los pines y mapas dejan de servir en el peor momento.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/ubicacion-en-vivo-no-carga-en-estadio" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Guia</span>
+      <h2><a href="/blog/como-coordinar-grupos-grandes-en-eventos">Como coordinar grupos grandes en eventos sin volverte loco</a></h2>
+      <p>Una guia para grupos de amigos, tours, familias extendidas o equipos que necesitan estructura mas alla de un chat normal.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 7 min de lectura</span>
+      <br /><br />
+      <a href="/blog/como-coordinar-grupos-grandes-en-eventos" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Fan Zone</span>
+      <h2><a href="/blog/sin-senal-en-fan-zone-que-hacer">Sin senal en una fan zone: que hacer para no perder a tu grupo</a></h2>
+      <p>Contenido orientado a Mundial, partidos y pantallas publicas donde la fan zone parece facil hasta que la red colapsa.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/sin-senal-en-fan-zone-que-hacer" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">CDMX</span>
+      <h2><a href="/blog/arena-cdmx-sin-senal-que-hacer">Arena CDMX sin senal: que hacer para coordinarte con tu grupo</a></h2>
+      <p>Guia localizada para Arena CDMX, con foco en accesos, reunion y salida cuando la red del venue se vuelve lenta.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 5 min de lectura</span>
+      <br /><br />
+      <a href="/blog/arena-cdmx-sin-senal-que-hacer" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">CDMX</span>
+      <h2><a href="/blog/pepsi-center-sin-senal-cdmx">Pepsi Center sin senal en CDMX: como coordinar a tu grupo</a></h2>
+      <p>Consejos practicos para grupos que van al Pepsi Center y quieren evitar el caos de salida cuando WhatsApp se queda corto.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 5 min de lectura</span>
+      <br /><br />
+      <a href="/blog/pepsi-center-sin-senal-cdmx" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">CDMX</span>
+      <h2><a href="/blog/autodromo-hermanos-rodriguez-sin-senal">Autodromo Hermanos Rodriguez sin senal: como coordinarte en eventos grandes</a></h2>
+      <p>Un post para conciertos, festivales y eventos realmente masivos donde la coordinacion del grupo depende de tener plan B.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/autodromo-hermanos-rodriguez-sin-senal" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">CDMX</span>
+      <h2><a href="/blog/estadio-gnp-seguros-sin-senal-cdmx">Estadio GNP Seguros sin senal en CDMX: como coordinarte mejor</a></h2>
+      <p>Guia local para conciertos y eventos en el venue antes conocido como Foro Sol, con foco en accesos, reunion y salida.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/estadio-gnp-seguros-sin-senal-cdmx" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">CDMX</span>
+      <h2><a href="/blog/palacio-de-los-deportes-sin-senal-cdmx">Palacio de los Deportes sin senal en CDMX: guia para tu grupo</a></h2>
+      <p>Consejos practicos para conciertos en Palacio: como reducir caos de entrada, separacion y salida cuando la red no responde.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 5 min de lectura</span>
+      <br /><br />
+      <a href="/blog/palacio-de-los-deportes-sin-senal-cdmx" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">CDMX</span>
+      <h2><a href="/blog/auditorio-nacional-sin-senal-cdmx">Auditorio Nacional sin senal en CDMX: como no perder a tu grupo</a></h2>
+      <p>Una pagina local para uno de los venues mas buscados de CDMX, con recomendaciones concretas para coordinacion simple.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 5 min de lectura</span>
+      <br /><br />
+      <a href="/blog/auditorio-nacional-sin-senal-cdmx" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Problema</span>
+      <h2><a href="/blog/whatsapp-no-funciona-en-estadio">WhatsApp no funciona en el estadio: por que pasa y que hacer</a></h2>
+      <p>Respuesta directa a una busqueda de alta intencion: por que WhatsApp falla en estadios y cual es el plan B realista.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/whatsapp-no-funciona-en-estadio" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Problema</span>
+      <h2><a href="/blog/sin-senal-en-concierto-que-hacer">Sin senal en un concierto: que hacer para no perder a tu grupo</a></h2>
+      <p>Post orientado a usuarios que ya estan sufriendo el problema o se quieren preparar antes de ir a un concierto lleno.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 5 min de lectura</span>
+      <br /><br />
+      <a href="/blog/sin-senal-en-concierto-que-hacer" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Comparativa</span>
+      <h2><a href="/blog/conectx-vs-whatsapp-estadios">Conectx vs WhatsApp en estadios: cual sirve mejor cuando no hay senal</a></h2>
+      <p>Comparativa enfocada en contexto real: por que WhatsApp sigue siendo util, pero no basta dentro de eventos masivos saturados.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/conectx-vs-whatsapp-estadios" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Comparativa</span>
+      <h2><a href="/blog/conectx-vs-bridgefy">Conectx vs Bridgefy: diferencias para estadios y eventos masivos</a></h2>
+      <p>Una comparativa de categoria para usuarios que ya conocen apps mesh y quieren entender cual encaja mejor con estadios y grupos.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/conectx-vs-bridgefy" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Estadios</span>
+      <h2><a href="/blog/estadio-azteca-sin-senal-que-hacer">Estadio Azteca sin senal: que hacer para encontrar a tu grupo</a></h2>
+      <p>Una guia especifica para el Azteca, con enfoque en puntos de reunion, entradas y coordinacion cuando la red se satura.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/estadio-azteca-sin-senal-que-hacer" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Estadios</span>
+      <h2><a href="/blog/estadio-bbva-sin-senal-monterrey">Estadio BBVA sin senal en Monterrey: como coordinarte mejor</a></h2>
+      <p>Contenido localizado para busquedas ligadas al estadio BBVA y a grupos que van a partidos o eventos grandes en Monterrey.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 5 min de lectura</span>
+      <br /><br />
+      <a href="/blog/estadio-bbva-sin-senal-monterrey" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Estadios</span>
+      <h2><a href="/blog/estadio-akron-sin-senal-guadalajara">Estadio Akron sin senal en Guadalajara: guia para no perder a tu grupo</a></h2>
+      <p>Una pagina orientada a Guadalajara y al estadio Akron, con consejos simples para coordinar grupos bajo conectividad limitada.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 5 min de lectura</span>
+      <br /><br />
+      <a href="/blog/estadio-akron-sin-senal-guadalajara" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Familias</span>
+      <h2><a href="/blog/chat-sin-internet-para-familias-en-eventos">Chat sin internet para familias en eventos masivos</a></h2>
+      <p>Una guia para familias que van con ninos o adultos mayores y necesitan un plan de coordinacion mas robusto que WhatsApp.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/chat-sin-internet-para-familias-en-eventos" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Turistas</span>
+      <h2><a href="/blog/chat-sin-internet-para-turistas-en-mexico">Chat sin internet para turistas en Mexico durante eventos masivos</a></h2>
+      <p>Post orientado a visitantes y aficionados extranjeros que dependeran de roaming o conectividad inestable en Mexico.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/chat-sin-internet-para-turistas-en-mexico" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Producto</span>
+      <h2><a href="/blog/mejor-app-para-hablar-en-estadio-sin-senal">Mejor app para hablar en un estadio sin senal: que debes buscar</a></h2>
+      <p>Una guia de compra practicamente orientada a usuarios que buscan una app util para coordinar grupos dentro del estadio.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 7 min de lectura</span>
+      <br /><br />
+      <a href="/blog/mejor-app-para-hablar-en-estadio-sin-senal" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Mundial 2026</span>
+      <h2><a href="/blog/como-comunicarse-con-amigos-en-mundial-2026">Como comunicarte con tus amigos en el Mundial 2026 si no hay senal</a></h2>
+      <p>Un post enfocado en coordinacion de grupos, accesos, salidas y reencuentros durante partidos del Mundial.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 7 min de lectura</span>
+      <br /><br />
+      <a href="/blog/como-comunicarse-con-amigos-en-mundial-2026" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">iPhone + Android</span>
+      <h2><a href="/blog/chat-offline-iphone-android">Chat offline entre iPhone y Android: si se puede y como funciona</a></h2>
+      <p>Respuesta directa a una duda comun de compatibilidad: como hablar sin internet entre plataformas distintas.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/chat-offline-iphone-android" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Guia</span>
+      <h2><a href="/blog/que-hacer-si-te-separas-en-estadio">Que hacer si te separas de tu grupo en un estadio sin senal</a></h2>
+      <p>Una guia practica para reencontrarte rapido cuando te separas de tu grupo en un estadio y la red celular deja de funcionar.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/que-hacer-si-te-separas-en-estadio" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Guia</span>
+      <h2><a href="/blog/chat-sin-internet-conciertos-festivales">Chat sin Internet en conciertos y festivales: como coordinarte sin senal</a></h2>
+      <p>Si vas a un concierto o festival, esta es la forma mas simple de prepararte para cuando WhatsApp falle y tu grupo se disperse.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 7 min de lectura</span>
+      <br /><br />
+      <a href="/blog/chat-sin-internet-conciertos-festivales" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Tecnologia</span>
+      <h2><a href="/blog/bluetooth-vs-wifi-direct-chat-offline">Bluetooth vs WiFi Direct para chat offline: cual conviene mas</a></h2>
+      <p>Comparamos alcance, bateria, velocidad y uso real para entender que tecnologia funciona mejor en mensajeria sin internet.</p>
+      <span class="article-meta">13 de abril, 2026 &middot; 8 min de lectura</span>
+      <br /><br />
+      <a href="/blog/bluetooth-vs-wifi-direct-chat-offline" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Mundial 2026</span>
+      <h2><a href="/blog/conectividad-mundial-2026-estadios-mexico">Conectividad en el Mundial 2026: Por que la señal va a fallar en los estadios de Mexico</a></h2>
+      <p>87,000 personas en el Estadio Azteca, todas intentando usar WhatsApp al mismo tiempo. Te explicamos por que la red celular se va a saturar y como prepararte para no perder comunicacion con tu grupo.</p>
+      <span class="article-meta">13 de marzo, 2026 &middot; 6 min de lectura</span>
+      <br /><br />
+      <a href="/blog/conectividad-mundial-2026-estadios-mexico" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Guia</span>
+      <h2><a href="/blog/chat-sin-internet-estadio">Chat sin Internet en el Estadio: 5 Formas de Comunicarte cuando no hay Señal</a></h2>
+      <p>Cuando estas en un concierto, partido o festival y WhatsApp no carga, que opciones tienes? Revisamos las alternativas para chatear sin internet o señal celular en eventos masivos.</p>
+      <span class="article-meta">13 de marzo, 2026 &middot; 7 min de lectura</span>
+      <br /><br />
+      <a href="/blog/chat-sin-internet-estadio" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+    <article class="article-card">
+      <span class="article-tag">Tecnologia</span>
+      <h2><a href="/blog/como-funciona-mesh-networking">Como funciona el Mesh Networking: la tecnologia detras de la comunicacion sin internet</a></h2>
+      <p>Bluetooth mesh, WiFi Direct, redes descentralizadas. Explicamos en terminos simples como funcionan las redes mesh y por que son la solucion para estadios y eventos masivos.</p>
+      <span class="article-meta">13 de marzo, 2026 &middot; 8 min de lectura</span>
+      <br /><br />
+      <a href="/blog/como-funciona-mesh-networking" class="read-more">Leer articulo &rarr;</a>
+    </article>
+
+  </div>
+</main>
+
+<footer>
+  <p>Conectx &copy; 2026 &middot; <a href="/">Inicio</a> &middot; <a href="/privacidad">Privacidad</a> &middot; <a href="/soporte">Soporte</a> &middot; <a href="mailto:hola@conectx.app">hola@conectx.app</a></p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+# Conectx — conectx.app
+User-agent: *
+Allow: /
+Disallow: /exito
+Disallow: /api/
+Disallow: /stripe/
+
+Sitemap: https://www.conectx.app/sitemap.xml

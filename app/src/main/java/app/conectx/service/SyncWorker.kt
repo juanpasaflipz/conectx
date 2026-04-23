@@ -38,6 +38,7 @@ class SyncWorker @AssistedInject constructor(
     }
 
     override suspend fun doWork(): Result {
+        firebasePlugin.start()
         if (!firebasePlugin.isAvailable) {
             Log.d(TAG, "No internet — skipping sync")
             return Result.success()
@@ -58,31 +59,27 @@ class SyncWorker @AssistedInject constructor(
      * re-pushing an already-synced record is harmless.
      */
     private suspend fun syncPendingRecords() {
-        val squadIds = syncRecordDao.getAllSquadIds()
         var totalSynced = 0
+        val syncedAt = System.currentTimeMillis()
+        val records = syncRecordDao.getPendingFirebaseRecords(limit = 200)
 
-        for (squadId in squadIds) {
-            // Get the last 50 records per squad — a reasonable batch size
-            val records = syncRecordDao.getRecordsForSquad(squadId)
-                .takeLast(50)
-                .filter { it.type != RecordType.SYNC_OFFER.name }
-
-            for (entity in records) {
-                val record = SyncRecord(
-                    id = entity.id,
-                    squadId = entity.squadId,
-                    authorId = entity.authorId,
-                    lamportClock = entity.lamportClock,
-                    timestamp = entity.timestamp,
-                    type = RecordType.valueOf(entity.type),
-                    payload = entity.payload,
-                    signature = entity.signature
-                )
-                firebasePlugin.broadcastToFirebase(record)
+        for (entity in records) {
+            val record = SyncRecord(
+                id = entity.id,
+                squadId = entity.squadId,
+                authorId = entity.authorId,
+                lamportClock = entity.lamportClock,
+                timestamp = entity.timestamp,
+                type = RecordType.valueOf(entity.type),
+                payload = entity.payload,
+                signature = entity.signature
+            )
+            if (firebasePlugin.broadcastToFirebase(record)) {
+                syncRecordDao.markFirebaseSynced(entity.id, syncedAt)
                 totalSynced++
             }
         }
 
-        Log.d(TAG, "Synced $totalSynced records across ${squadIds.size} squad(s)")
+        Log.d(TAG, "Synced $totalSynced pending records to Firebase")
     }
 }

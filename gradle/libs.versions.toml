@@ -20,6 +20,7 @@ lifecycle = "2.7.0"
 navigation = "2.7.7"
 core-ktx = "1.12.0"
 activity-compose = "1.8.2"
+zxing = "3.5.3"
 
 # Testing
 junit = "4.13.2"
@@ -81,6 +82,9 @@ protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite",
 
 # Crypto — Signal Protocol (replaces Tink)
 libsignal-android = { group = "org.signal", name = "libsignal-android", version.ref = "libsignal" }
+
+# QR codes
+zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }

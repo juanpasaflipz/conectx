@@ -1,6 +1,7 @@
 package app.conectx.di
 
 import app.conectx.transport.TransportPlugin
+import app.conectx.transport.ble.BleGattPlugin
 import app.conectx.transport.firebase.FirebasePlugin
 import app.conectx.transport.nearby.NearbyPlugin
 import app.conectx.transport.wifiaware.WifiAwarePlugin
@@ -21,6 +22,10 @@ abstract class TransportModule {
     @Binds
     @IntoSet
     abstract fun bindNearbyPlugin(impl: NearbyPlugin): TransportPlugin
+
+    @Binds
+    @IntoSet
+    abstract fun bindBleGattPlugin(impl: BleGattPlugin): TransportPlugin
 
     @Binds
     @IntoSet

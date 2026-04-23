@@ -1,3 +1,4 @@
+# Android / Gradle
 *.iml
 .gradle
 /local.properties
@@ -15,3 +16,20 @@ local.properties
 app/google-services.json
 keystore.properties
 *.jks
+
+# Editor / local tooling
+.vscode/
+.claude/
+.history/
+.gstack/
+
+# Firebase Functions (Node)
+functions/node_modules/
+functions/lib/
+
+# Marketing site (Node)
+marketing/node_modules/
+
+# Scratch / local artifacts
+Untitled
+*.pdf

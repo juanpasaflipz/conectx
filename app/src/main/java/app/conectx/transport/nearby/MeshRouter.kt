@@ -1,6 +1,7 @@
 package app.conectx.transport.nearby
 
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicLong
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,6 +27,10 @@ class MeshRouter @Inject constructor() {
     private val seenIds: MutableSet<String> =
         ConcurrentHashMap.newKeySet(MAX_SEEN)
 
+    /** Counter for messages relayed through this device */
+    private val _relayedCount = AtomicLong(0)
+    val relayedCount: Long get() = _relayedCount.get()
+
     /**
      * Returns true if this is the first time we've seen [recordId].
      * Marks it as seen for future calls.
@@ -45,6 +50,8 @@ class MeshRouter @Inject constructor() {
         senderEndpointId: String,
         allConnected: Set<String>
     ): Set<String> {
-        return allConnected - senderEndpointId
+        val targets = allConnected - senderEndpointId
+        if (targets.isNotEmpty()) _relayedCount.incrementAndGet()
+        return targets
     }
 }

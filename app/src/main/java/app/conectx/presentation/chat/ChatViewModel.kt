@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.conectx.domain.model.Message
+import app.conectx.domain.model.ReactionType
 import app.conectx.domain.repository.MessageRepository
 import app.conectx.domain.repository.SquadRepository
 import app.conectx.sync.SyncEngine
@@ -69,6 +70,18 @@ class ChatViewModel @Inject constructor(
         if (text.isBlank()) return
         viewModelScope.launch {
             syncEngine.sendChat(squadId, text.trim())
+        }
+    }
+
+    fun sendReaction(reactionType: ReactionType) {
+        viewModelScope.launch {
+            syncEngine.sendReaction(squadId, reactionType)
+        }
+    }
+
+    fun sendCheckIn() {
+        viewModelScope.launch {
+            syncEngine.sendCheckIn(squadId)
         }
     }
 }

@@ -1,6 +1,7 @@
 package app.conectx.data.repository
 
 import android.util.Log
+import app.conectx.data.remote.firebase.FirebaseAuthSource
 import app.conectx.data.local.db.dao.SquadDao
 import app.conectx.data.local.db.entity.SquadEntity
 import app.conectx.domain.model.Squad
@@ -24,7 +25,8 @@ import javax.inject.Singleton
 @Singleton
 class SquadRepositoryImpl @Inject constructor(
     private val squadDao: SquadDao,
-    private val database: FirebaseDatabase
+    private val database: FirebaseDatabase,
+    private val authSource: FirebaseAuthSource
 ) : SquadRepository {
 
     companion object {
@@ -53,6 +55,7 @@ class SquadRepositoryImpl @Inject constructor(
 
         // Firebase fallback
         return try {
+            authSource.ensureSignedIn()
             val snapshot = database.reference
                 .child(INVITES_REF)
                 .child(code)
@@ -115,23 +118,21 @@ class SquadRepositoryImpl @Inject constructor(
      * Fire-and-forget — if it fails (no internet), the squad still
      * exists locally and will propagate via mesh.
      */
-    private fun publishInviteToFirebase(squad: Squad) {
+    private suspend fun publishInviteToFirebase(squad: Squad) {
         try {
+            val creatorUid = authSource.ensureSignedIn().getOrNull()?.uid ?: return
             val data = mapOf(
                 "squadId" to squad.id,
                 "name" to squad.name,
-                "createdAt" to squad.createdAt
+                "createdAt" to squad.createdAt,
+                "creatorUid" to creatorUid
             )
             database.reference
                 .child(INVITES_REF)
                 .child(squad.inviteCode)
                 .setValue(data)
-                .addOnSuccessListener {
-                    Log.d(TAG, "Published invite ${squad.inviteCode} to Firebase")
-                }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "Failed to publish invite to Firebase", e)
-                }
+                .await()
+            Log.d(TAG, "Published invite ${squad.inviteCode} to Firebase")
         } catch (e: Exception) {
             Log.w(TAG, "publishInviteToFirebase failed", e)
         }

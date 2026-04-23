@@ -3,7 +3,75 @@
     { "source": "/privacidad", "destination": "/privacidad.html" },
     { "source": "/soporte", "destination": "/soporte.html" },
     { "source": "/exito", "destination": "/exito.html" },
+    { "source": "/blog", "destination": "/blog/index.html" },
+    { "source": "/blog/chat-sin-internet-estadio", "destination": "/blog/chat-sin-internet-estadio.html" },
+    { "source": "/blog/chat-sin-internet-conciertos-festivales", "destination": "/blog/chat-sin-internet-conciertos-festivales.html" },
+    { "source": "/blog/mejor-app-para-hablar-en-estadio-sin-senal", "destination": "/blog/mejor-app-para-hablar-en-estadio-sin-senal.html" },
+    { "source": "/blog/como-comunicarse-con-amigos-en-mundial-2026", "destination": "/blog/como-comunicarse-con-amigos-en-mundial-2026.html" },
+    { "source": "/blog/chat-offline-iphone-android", "destination": "/blog/chat-offline-iphone-android.html" },
+    { "source": "/blog/estadio-azteca-sin-senal-que-hacer", "destination": "/blog/estadio-azteca-sin-senal-que-hacer.html" },
+    { "source": "/blog/estadio-bbva-sin-senal-monterrey", "destination": "/blog/estadio-bbva-sin-senal-monterrey.html" },
+    { "source": "/blog/estadio-akron-sin-senal-guadalajara", "destination": "/blog/estadio-akron-sin-senal-guadalajara.html" },
+    { "source": "/blog/estadio-gnp-seguros-sin-senal-cdmx", "destination": "/blog/estadio-gnp-seguros-sin-senal-cdmx.html" },
+    { "source": "/blog/palacio-de-los-deportes-sin-senal-cdmx", "destination": "/blog/palacio-de-los-deportes-sin-senal-cdmx.html" },
+    { "source": "/blog/auditorio-nacional-sin-senal-cdmx", "destination": "/blog/auditorio-nacional-sin-senal-cdmx.html" },
+    { "source": "/blog/arena-cdmx-sin-senal-que-hacer", "destination": "/blog/arena-cdmx-sin-senal-que-hacer.html" },
+    { "source": "/blog/pepsi-center-sin-senal-cdmx", "destination": "/blog/pepsi-center-sin-senal-cdmx.html" },
+    { "source": "/blog/autodromo-hermanos-rodriguez-sin-senal", "destination": "/blog/autodromo-hermanos-rodriguez-sin-senal.html" },
+    { "source": "/blog/roaming-no-funciona-en-conciertos", "destination": "/blog/roaming-no-funciona-en-conciertos.html" },
+    { "source": "/blog/ubicacion-en-vivo-no-carga-en-estadio", "destination": "/blog/ubicacion-en-vivo-no-carga-en-estadio.html" },
+    { "source": "/blog/como-coordinar-grupos-grandes-en-eventos", "destination": "/blog/como-coordinar-grupos-grandes-en-eventos.html" },
+    { "source": "/blog/sin-senal-en-fan-zone-que-hacer", "destination": "/blog/sin-senal-en-fan-zone-que-hacer.html" },
+    { "source": "/blog/whatsapp-no-manda-fotos-en-estadio", "destination": "/blog/whatsapp-no-manda-fotos-en-estadio.html" },
+    { "source": "/blog/no-puedo-llamar-en-concierto", "destination": "/blog/no-puedo-llamar-en-concierto.html" },
+    { "source": "/blog/como-encontrar-a-mis-amigos-en-festival", "destination": "/blog/como-encontrar-a-mis-amigos-en-festival.html" },
+    { "source": "/blog/mejor-app-para-fan-zones", "destination": "/blog/mejor-app-para-fan-zones.html" },
+    { "source": "/blog/chat-sin-internet-para-familias-en-eventos", "destination": "/blog/chat-sin-internet-para-familias-en-eventos.html" },
+    { "source": "/blog/chat-sin-internet-para-turistas-en-mexico", "destination": "/blog/chat-sin-internet-para-turistas-en-mexico.html" },
+    { "source": "/blog/whatsapp-no-funciona-en-estadio", "destination": "/blog/whatsapp-no-funciona-en-estadio.html" },
+    { "source": "/blog/sin-senal-en-concierto-que-hacer", "destination": "/blog/sin-senal-en-concierto-que-hacer.html" },
+    { "source": "/blog/conectx-vs-whatsapp-estadios", "destination": "/blog/conectx-vs-whatsapp-estadios.html" },
+    { "source": "/blog/conectx-vs-bridgefy", "destination": "/blog/conectx-vs-bridgefy.html" },
+    { "source": "/blog/que-hacer-si-te-separas-en-estadio", "destination": "/blog/que-hacer-si-te-separas-en-estadio.html" },
+    { "source": "/blog/como-funciona-mesh-networking", "destination": "/blog/como-funciona-mesh-networking.html" },
+    { "source": "/blog/bluetooth-vs-wifi-direct-chat-offline", "destination": "/blog/bluetooth-vs-wifi-direct-chat-offline.html" },
+    { "source": "/blog/conectividad-mundial-2026-estadios-mexico", "destination": "/blog/conectividad-mundial-2026-estadios-mexico.html" },
     { "source": "/stripe/webhook", "destination": "/api/stripe/webhook" },
     { "source": "/api/activation/lookup", "destination": "/api/activation/lookup" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/icons/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    },
+    {
+      "source": "/api/og",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, s-maxage=604800, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=86400" },
+        { "key": "Content-Type", "value": "application/xml" }
+      ]
+    }
   ]
 }

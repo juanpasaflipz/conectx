@@ -155,4 +155,75 @@ object PayloadCodec {
             )
         }
     }
+
+    // ── REACTION ─────────────────────────────────────────────────────
+    // Lightweight emoji reactions that propagate through mesh as system messages.
+
+    data class ReactionPayload(val authorName: String, val reactionType: String)
+
+    fun encodeReaction(authorName: String, reactionType: String): ByteArray {
+        val baos = ByteArrayOutputStream()
+        DataOutputStream(baos).use { out ->
+            out.writeUTF(authorName)
+            out.writeUTF(reactionType)
+        }
+        return baos.toByteArray()
+    }
+
+    fun decodeReaction(bytes: ByteArray): ReactionPayload {
+        DataInputStream(ByteArrayInputStream(bytes)).use { input ->
+            return ReactionPayload(
+                authorName = input.readUTF(),
+                reactionType = input.readUTF()
+            )
+        }
+    }
+
+    // ── CHECK-IN (PING) ─────────────────────────────────────────────
+    // One-tap "Estoy aqui" — renders as system message in chat.
+
+    data class CheckInPayload(val authorName: String)
+
+    fun encodeCheckIn(authorName: String): ByteArray {
+        val baos = ByteArrayOutputStream()
+        DataOutputStream(baos).use { out ->
+            out.writeUTF(authorName)
+        }
+        return baos.toByteArray()
+    }
+
+    fun decodeCheckIn(bytes: ByteArray): CheckInPayload {
+        DataInputStream(ByteArrayInputStream(bytes)).use { input ->
+            return CheckInPayload(authorName = input.readUTF())
+        }
+    }
+
+    // ── MEETUP ──────────────────────────────────────────────────────
+    // Emergency meetup point — one per squad, any member can update.
+
+    data class MeetupPayload(
+        val label: String,
+        val description: String,
+        val updatedBy: String
+    )
+
+    fun encodeMeetup(label: String, description: String, updatedBy: String): ByteArray {
+        val baos = ByteArrayOutputStream()
+        DataOutputStream(baos).use { out ->
+            out.writeUTF(label)
+            out.writeUTF(description)
+            out.writeUTF(updatedBy)
+        }
+        return baos.toByteArray()
+    }
+
+    fun decodeMeetup(bytes: ByteArray): MeetupPayload {
+        DataInputStream(ByteArrayInputStream(bytes)).use { input ->
+            return MeetupPayload(
+                label = input.readUTF(),
+                description = input.readUTF(),
+                updatedBy = input.readUTF()
+            )
+        }
+    }
 }

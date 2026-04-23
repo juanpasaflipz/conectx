@@ -4,17 +4,21 @@ import android.util.Log
 import app.conectx.crypto.SignalSessionManager
 import app.conectx.data.local.db.dao.ConversationDao
 import app.conectx.data.local.db.dao.DirectMessageDao
+import app.conectx.data.local.db.dao.MeetupPointDao
 import app.conectx.data.local.db.dao.MessageDao
 import app.conectx.data.local.db.dao.SquadDao
 import app.conectx.data.local.db.dao.SyncRecordDao
 import app.conectx.data.local.db.entity.ConversationEntity
 import app.conectx.data.local.db.entity.DirectMessageEntity
+import app.conectx.data.local.db.entity.MeetupPointEntity
 import app.conectx.data.local.db.entity.MessageEntity
 import app.conectx.data.local.db.entity.SquadEntity
 import app.conectx.data.local.db.entity.SyncRecordEntity
 import app.conectx.domain.model.LocationPing
 import app.conectx.domain.model.Peer
+import app.conectx.domain.model.ReactionType
 import app.conectx.domain.model.RecordType
+import app.conectx.domain.model.Squad
 import app.conectx.domain.model.SyncRecord
 import app.conectx.proto.TextPayload
 import androidx.datastore.core.DataStore
@@ -65,6 +69,7 @@ class SyncEngine @Inject constructor(
     private val squadDao: SquadDao,
     private val conversationDao: ConversationDao,
     private val directMessageDao: DirectMessageDao,
+    private val meetupPointDao: MeetupPointDao,
     private val lamportClock: LamportClock,
     private val conflictResolver: ConflictResolver,
     private val messageQueue: MessageQueue,
@@ -110,6 +115,7 @@ class SyncEngine @Inject constructor(
         prefs[UserPreferences.USERNAME]?.let {
             localUserName = it
             transportManager.nearbyPlugin.configure(it)
+            transportManager.bleGattPlugin.configure(it)
         }
         Log.d(TAG, "Identity loaded: $localUserName ($localUserId)")
     }
@@ -243,6 +249,14 @@ class SyncEngine @Inject constructor(
         action: PayloadCodec.SquadAction,
         squad: app.conectx.domain.model.Squad
     ) {
+        // Firebase records are writable only after this device is registered
+        // as a squad member, so register membership before JOIN broadcasts.
+        when (action) {
+            PayloadCodec.SquadAction.CREATE,
+            PayloadCodec.SquadAction.JOIN -> transportManager.subscribeFirebaseToSquad(squad.id)
+            PayloadCodec.SquadAction.LEAVE -> transportManager.unsubscribeFirebaseFromSquad(squad.id)
+        }
+
         val clock = lamportClock.tick(squad.id)
         val payload = PayloadCodec.encodeSquadMeta(
             PayloadCodec.SquadMetaPayload(
@@ -270,12 +284,78 @@ class SyncEngine @Inject constructor(
 
         persistRecord(record)
         sendOrQueue(record)
+    }
 
-        when (action) {
-            PayloadCodec.SquadAction.CREATE,
-            PayloadCodec.SquadAction.JOIN -> transportManager.subscribeFirebaseToSquad(squad.id)
-            PayloadCodec.SquadAction.LEAVE -> transportManager.unsubscribeFirebaseFromSquad(squad.id)
-        }
+    suspend fun sendReaction(squadId: String, reactionType: ReactionType) {
+        val clock = lamportClock.tick(squadId)
+        val payload = PayloadCodec.encodeReaction(localUserName, reactionType.name)
+        val id = UUID.randomUUID().toString()
+        val ts = System.currentTimeMillis()
+
+        val record = SyncRecord(
+            id = id,
+            squadId = squadId,
+            authorId = localUserId,
+            lamportClock = clock,
+            timestamp = ts,
+            type = RecordType.REACTION,
+            payload = payload,
+            signature = signalManager.sign(buildSyncRecordSignableBytes(
+                id, squadId, localUserId, clock, ts, RecordType.REACTION, payload
+            ))
+        )
+        Log.d(TAG, "Signed REACTION record ${record.id}")
+
+        persistRecord(record)
+        sendOrQueue(record)
+    }
+
+    suspend fun sendCheckIn(squadId: String) {
+        val clock = lamportClock.tick(squadId)
+        val payload = PayloadCodec.encodeCheckIn(localUserName)
+        val id = UUID.randomUUID().toString()
+        val ts = System.currentTimeMillis()
+
+        val record = SyncRecord(
+            id = id,
+            squadId = squadId,
+            authorId = localUserId,
+            lamportClock = clock,
+            timestamp = ts,
+            type = RecordType.PING,
+            payload = payload,
+            signature = signalManager.sign(buildSyncRecordSignableBytes(
+                id, squadId, localUserId, clock, ts, RecordType.PING, payload
+            ))
+        )
+        Log.d(TAG, "Signed PING record ${record.id}")
+
+        persistRecord(record)
+        sendOrQueue(record)
+    }
+
+    suspend fun sendMeetupUpdate(squadId: String, label: String, description: String) {
+        val clock = lamportClock.tick(squadId)
+        val payload = PayloadCodec.encodeMeetup(label, description, localUserName)
+        val id = UUID.randomUUID().toString()
+        val ts = System.currentTimeMillis()
+
+        val record = SyncRecord(
+            id = id,
+            squadId = squadId,
+            authorId = localUserId,
+            lamportClock = clock,
+            timestamp = ts,
+            type = RecordType.MEETUP,
+            payload = payload,
+            signature = signalManager.sign(buildSyncRecordSignableBytes(
+                id, squadId, localUserId, clock, ts, RecordType.MEETUP, payload
+            ))
+        )
+        Log.d(TAG, "Signed MEETUP record ${record.id}")
+
+        persistRecord(record)
+        sendOrQueue(record)
     }
 
     // ── Incoming mesh message processing ──────────────────────────────
@@ -564,7 +644,11 @@ class SyncEngine @Inject constructor(
         val queued = messageQueue.drainAll()
         Log.d(TAG, "Flushing ${queued.size} queued records")
         for (record in queued) {
-            if (!transportManager.send(record)) {
+            val result = transportManager.send(record)
+            if (result.sentViaFirebase) {
+                syncRecordDao.markFirebaseSynced(record.id, System.currentTimeMillis())
+            }
+            if (!result.accepted) {
                 messageQueue.enqueue(record)
                 break
             }
@@ -574,7 +658,11 @@ class SyncEngine @Inject constructor(
     // ── Send / Queue ─────────────────────────────────────────────────
 
     private suspend fun sendOrQueue(record: SyncRecord) {
-        if (!transportManager.send(record)) {
+        val result = transportManager.send(record)
+        if (result.sentViaFirebase) {
+            syncRecordDao.markFirebaseSynced(record.id, System.currentTimeMillis())
+        }
+        if (!result.accepted) {
             messageQueue.enqueue(record)
             Log.d(TAG, "No transport — ${record.type} queued")
         }
@@ -588,7 +676,10 @@ class SyncEngine @Inject constructor(
         when (record.type) {
             RecordType.CHAT -> persistChatMessage(record)
             RecordType.SQUAD_META -> persistSquadMeta(record)
-            else -> { /* LOCATION, PING stored as sync records only */ }
+            RecordType.REACTION -> persistReaction(record)
+            RecordType.PING -> persistCheckIn(record)
+            RecordType.MEETUP -> persistMeetup(record)
+            else -> { /* LOCATION, SYNC_OFFER stored as sync records only */ }
         }
     }
 
@@ -649,6 +740,65 @@ class SyncEngine @Inject constructor(
     }
 
     // ── Helpers ───────────────────────────────────────────────────────
+
+    /**
+     * Reactions appear as system messages in chat: "[user] reacted: [emoji]"
+     */
+    private suspend fun persistReaction(record: SyncRecord) {
+        val reaction = PayloadCodec.decodeReaction(record.payload)
+        val emoji = try {
+            ReactionType.valueOf(reaction.reactionType).emoji
+        } catch (_: Exception) { reaction.reactionType }
+
+        messageDao.insert(
+            MessageEntity(
+                id = record.id,
+                squadId = record.squadId,
+                authorId = record.authorId,
+                authorName = reaction.authorName,
+                text = "${reaction.authorName} $emoji",
+                lamportClock = record.lamportClock,
+                timestamp = record.timestamp,
+                isSystem = true
+            )
+        )
+    }
+
+    /**
+     * Check-ins appear as system messages: "[user] esta aqui"
+     */
+    private suspend fun persistCheckIn(record: SyncRecord) {
+        val checkIn = PayloadCodec.decodeCheckIn(record.payload)
+        messageDao.insert(
+            MessageEntity(
+                id = record.id,
+                squadId = record.squadId,
+                authorId = record.authorId,
+                authorName = checkIn.authorName,
+                text = "${checkIn.authorName} esta aqui \u2714\uFE0F",
+                lamportClock = record.lamportClock,
+                timestamp = record.timestamp,
+                isSystem = true
+            )
+        )
+    }
+
+    /**
+     * Meetup point — upserts into meetup_points table.
+     */
+    private suspend fun persistMeetup(record: SyncRecord) {
+        val meetup = PayloadCodec.decodeMeetup(record.payload)
+        meetupPointDao.upsert(
+            MeetupPointEntity(
+                squadId = record.squadId,
+                label = meetup.label,
+                description = meetup.description,
+                updatedAt = record.timestamp,
+                updatedBy = meetup.updatedBy
+            )
+        )
+        Log.d(TAG, "Meetup point updated for squad ${record.squadId}: ${meetup.label}")
+    }
 
     private fun SyncRecord.toEntity() = SyncRecordEntity(
         id = id,

@@ -25,8 +25,8 @@ android {
         applicationId = "app.conectx"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
-        versionName = "0.4.0-alpha"
+        versionCode = 7
+        versionName = "0.6.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -143,6 +143,9 @@ dependencies {
 
     // Crypto — Signal Protocol E2E encryption (replaces Tink)
     implementation(libs.libsignal.android)
+
+    // QR codes
+    implementation(libs.zxing.core)
 
     // Testing
     testImplementation(libs.junit)

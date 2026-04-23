@@ -2,6 +2,7 @@ package app.conectx.transport
 
 import android.util.Log
 import app.conectx.domain.model.SyncRecord
+import app.conectx.transport.ble.BleGattPlugin
 import app.conectx.transport.firebase.FirebasePlugin
 import app.conectx.transport.nearby.NearbyPlugin
 import app.conectx.transport.nearby.SyncRecordSerializer
@@ -14,25 +15,33 @@ import javax.inject.Singleton
 /**
  * Orchestrates transport selection and lifecycle.
  *
- * Priority order (first available wins for sending):
- * 1. WiFi Aware — cross-platform (Android + iOS), primary for interop
- * 2. Nearby Connections (BT + WiFi mesh) — Android-to-Android fallback
- * 3. Firebase Realtime Database — internet fallback
- *
  * All transports run simultaneously so messages arrive via whichever
- * path is fastest. Dedup happens in the sync layer.
+ * path is fastest. Dedup happens in the sync layer (MeshRouter + ConflictResolver).
+ *
+ * Priority order (each runs in parallel when available):
+ * 1. WiFi Aware — preferred cross-platform (Android + iOS 26+ with hardware support), high bandwidth
+ * 2. BLE GATT — cross-platform fallback (shipping iOS CoreBluetooth + Android devices without WiFi Aware)
+ * 3. Nearby Connections (BT + WiFi) — Android-to-Android mesh
+ * 4. Firebase Realtime Database — internet fallback (runs in parallel, non-blocking)
  */
 @Singleton
 class TransportManager @Inject constructor(
     val nearbyPlugin: NearbyPlugin,
+    val bleGattPlugin: BleGattPlugin,
     val firebasePlugin: FirebasePlugin,
     val wifiAwarePlugin: WifiAwarePlugin
 ) {
+    data class SendResult(
+        val accepted: Boolean,
+        val sentViaFirebase: Boolean
+    )
+
     companion object {
         private const val TAG = "TransportManager"
     }
 
-    private val plugins: List<TransportPlugin> = listOf(wifiAwarePlugin, nearbyPlugin, firebasePlugin)
+    private val plugins: List<TransportPlugin> =
+        listOf(wifiAwarePlugin, bleGattPlugin, nearbyPlugin, firebasePlugin)
 
     val isAnyTransportAvailable: Boolean
         get() = plugins.any { it.isAvailable }
@@ -75,17 +84,25 @@ class TransportManager @Inject constructor(
 
     /**
      * Sends a record via all available transports.
-     * WiFi Aware broadcasts to discovered peers (cross-platform).
-     * Nearby broadcasts to all connected peers via mesh.
+     * WiFi Aware broadcasts to discovered peers (cross-platform high-bandwidth).
+     * BLE GATT broadcasts to connected BLE peers (iOS interop + low-end Android).
+     * Nearby broadcasts to all connected peers via mesh (Android-to-Android).
      * Firebase pushes to RTDB for online squad members.
      * Returns true if at least one transport accepted the record.
      */
-    suspend fun send(record: SyncRecord): Boolean {
+    suspend fun send(record: SyncRecord): SendResult {
         var sent = false
+        var sentViaFirebase = false
 
         // WiFi Aware: broadcast to all discovered peers (cross-platform primary)
         if (wifiAwarePlugin.isAvailable) {
             wifiAwarePlugin.broadcast(SyncRecordSerializer.serialize(record))
+            sent = true
+        }
+
+        // BLE GATT: broadcast to all connected BLE peers (iOS + Android without WiFi Aware)
+        if (bleGattPlugin.isAvailable) {
+            bleGattPlugin.broadcast(record)
             sent = true
         }
 
@@ -98,14 +115,19 @@ class TransportManager @Inject constructor(
         // Firebase: push to RTDB (runs in parallel, doesn't block mesh)
         if (firebasePlugin.isAvailable) {
             try {
-                firebasePlugin.broadcastToFirebase(record)
-                sent = true
+                if (firebasePlugin.broadcastToFirebase(record)) {
+                    sent = true
+                    sentViaFirebase = true
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Firebase send failed", e)
             }
         }
 
-        return sent
+        return SendResult(
+            accepted = sent,
+            sentViaFirebase = sentViaFirebase
+        )
     }
 
     /**

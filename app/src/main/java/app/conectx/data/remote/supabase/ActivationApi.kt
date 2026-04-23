@@ -29,8 +29,7 @@ class ActivationApi @Inject constructor() {
     companion object {
         private const val TAG = "ActivationApi"
 
-        // TODO: replace with actual Supabase project URL
-        private const val BASE_URL = "https://your-project.supabase.co/functions/v1"
+        private const val BASE_URL = "https://umxqyxzhzjzkipefzsvk.supabase.co/functions/v1"
     }
 
     data class ActivationResult(

@@ -7,5 +7,6 @@ data class Message(
     val authorName: String,
     val text: String,
     val lamportClock: Long,
-    val timestamp: Long
+    val timestamp: Long,
+    val isSystem: Boolean = false
 )

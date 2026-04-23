@@ -24,4 +24,13 @@ interface SquadDao {
 
     @Query("DELETE FROM squads WHERE id = :id")
     suspend fun deleteById(id: String)
+
+    @Query("SELECT * FROM squads")
+    suspend fun getAllOnce(): List<SquadEntity>
+
+    @Query("SELECT COUNT(*) FROM squads")
+    suspend fun count(): Int
+
+    @Query("DELETE FROM squads")
+    suspend fun deleteAll()
 }

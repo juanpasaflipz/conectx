@@ -35,7 +35,8 @@ class MessageRepositoryImpl @Inject constructor(
         authorName = authorName,
         text = text,
         lamportClock = lamportClock,
-        timestamp = timestamp
+        timestamp = timestamp,
+        isSystem = isSystem
     )
 
     private fun Message.toEntity() = MessageEntity(
@@ -45,6 +46,7 @@ class MessageRepositoryImpl @Inject constructor(
         authorName = authorName,
         text = text,
         lamportClock = lamportClock,
-        timestamp = timestamp
+        timestamp = timestamp,
+        isSystem = isSystem
     )
 }

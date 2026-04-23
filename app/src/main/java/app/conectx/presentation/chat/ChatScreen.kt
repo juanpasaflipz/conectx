@@ -24,7 +24,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -65,6 +67,7 @@ import java.util.Locale
 fun ChatScreen(
     squadId: String,
     onLocationClick: () -> Unit,
+    onMeetupClick: () -> Unit,
     onBack: () -> Unit,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
@@ -90,6 +93,15 @@ fun ChatScreen(
                     }
                 },
                 actions = {
+                    // Check-in button
+                    IconButton(onClick = { viewModel.sendCheckIn() }) {
+                        Icon(Icons.Default.CheckCircle, contentDescription = stringResource(R.string.chat_checkin))
+                    }
+                    // Meetup point
+                    IconButton(onClick = onMeetupClick) {
+                        Icon(Icons.Default.PinDrop, contentDescription = stringResource(R.string.meetup_title))
+                    }
+                    // Location
                     IconButton(onClick = onLocationClick) {
                         Icon(Icons.Default.LocationOn, contentDescription = stringResource(R.string.nav_location))
                     }
@@ -118,6 +130,9 @@ fun ChatScreen(
                 localUserId = viewModel.localUserId,
                 modifier = Modifier.weight(1f)
             )
+
+            // Reaction bar
+            ReactionBar(onReaction = { viewModel.sendReaction(it) })
 
             // Input bar
             ChatInput(onSend = { viewModel.sendMessage(it) })
@@ -162,8 +177,6 @@ private fun MessageList(
             )
         }
     } else {
-        // reverseLayout: scroll starts at the bottom (newest messages visible).
-        // List is reversed so item 0 = newest = bottom of screen.
         LazyColumn(
             modifier = modifier
                 .fillMaxWidth()
@@ -175,23 +188,38 @@ private fun MessageList(
 
             val reversed = messages.reversed()
             items(reversed, key = { it.id }) { message ->
-                val isOwn = message.authorId == localUserId
-                // Show author name if this message is from someone else and
-                // the previous message (next in reversed list) was from a different author
-                val idx = reversed.indexOf(message)
-                val prevAuthor = reversed.getOrNull(idx + 1)?.authorId
-                val showAuthor = !isOwn && message.authorId != prevAuthor
+                if (message.isSystem) {
+                    SystemMessage(message)
+                } else {
+                    val isOwn = message.authorId == localUserId
+                    val idx = reversed.indexOf(message)
+                    val prevAuthor = reversed.getOrNull(idx + 1)?.authorId
+                    val showAuthor = !isOwn && message.authorId != prevAuthor
 
-                MessageBubble(
-                    message = message,
-                    isOwn = isOwn,
-                    showAuthorName = showAuthor
-                )
+                    MessageBubble(
+                        message = message,
+                        isOwn = isOwn,
+                        showAuthorName = showAuthor
+                    )
+                }
             }
 
             item { Spacer(modifier = Modifier.height(4.dp)) }
         }
     }
+}
+
+@Composable
+private fun SystemMessage(message: Message) {
+    Text(
+        text = message.text,
+        style = MaterialTheme.typography.bodySmall,
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    )
 }
 
 @Composable

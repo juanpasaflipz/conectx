@@ -17,4 +17,7 @@ object UserPreferences {
     val IS_ACTIVATED = booleanPreferencesKey("is_activated")
     val PASS_TYPE = stringPreferencesKey("pass_type")       // "free", "mundial", or "partido"
     val PASS_EXPIRY = longPreferencesKey("pass_expiry")     // epoch millis
+    val BATTERY_SAVER = booleanPreferencesKey("battery_saver")
+    val THEME_MODE = stringPreferencesKey("theme_mode")  // "system", "light", or "dark"
+    val DISCLOSURE_ACCEPTED = booleanPreferencesKey("disclosure_accepted")
 }

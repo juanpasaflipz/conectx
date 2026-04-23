@@ -14,6 +14,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -51,13 +52,23 @@ class FirebasePlugin @Inject constructor(
         private const val TAG = "FirebasePlugin"
         private const val SQUADS_REF = "squads"
         private const val RECORDS_REF = "records"
+        private const val MEMBERS_REF = "members"
+        private const val TIMESTAMP_FIELD = "timestamp"
+        private const val FIREBASE_UID_FIELD = "firebaseUid"
+        private const val MAX_RECENT_RECORDS = 200
+        private const val RECORD_WINDOW_MS = 6 * 60 * 60 * 1000L
     }
 
     private val _receivedMessages = MutableSharedFlow<SyncRecord>(extraBufferCapacity = 256)
     private var isRunning = false
 
     // Track active listeners so we can detach on stop()
-    private val activeListeners = ConcurrentHashMap<String, ChildEventListener>()
+    private data class ListenerHandle(
+        val query: Query,
+        val listener: ChildEventListener
+    )
+
+    private val activeListeners = ConcurrentHashMap<String, ListenerHandle>()
 
     // Squad IDs this device is a member of — set externally before start()
     private val subscribedSquads = ConcurrentHashMap.newKeySet<String>()
@@ -80,6 +91,7 @@ class FirebasePlugin @Inject constructor(
 
         // Attach listeners for all known squads
         for (squadId in subscribedSquads) {
+            ensureMembership(squadId)
             attachListener(squadId)
         }
 
@@ -91,12 +103,8 @@ class FirebasePlugin @Inject constructor(
         isRunning = false
 
         // Detach all RTDB listeners
-        for ((squadId, listener) in activeListeners) {
-            database.reference
-                .child(SQUADS_REF)
-                .child(squadId)
-                .child(RECORDS_REF)
-                .removeEventListener(listener)
+        for ((_, handle) in activeListeners) {
+            handle.query.removeEventListener(handle.listener)
         }
         activeListeners.clear()
 
@@ -125,7 +133,9 @@ class FirebasePlugin @Inject constructor(
     fun subscribeToSquad(squadId: String) {
         subscribedSquads.add(squadId)
         if (isRunning) {
-            attachListener(squadId)
+            ensureMembershipAsync(squadId) {
+                attachListener(squadId)
+            }
         }
     }
 
@@ -135,6 +145,7 @@ class FirebasePlugin @Inject constructor(
     fun unsubscribeFromSquad(squadId: String) {
         subscribedSquads.remove(squadId)
         detachListener(squadId)
+        removeMembershipAsync(squadId)
     }
 
     /**
@@ -142,8 +153,10 @@ class FirebasePlugin @Inject constructor(
      * when Nearby isn't available, or by SyncEngine for squad metadata
      * that should be available pre-match.
      */
-    suspend fun broadcastToFirebase(record: SyncRecord) {
-        if (!hasInternet()) return
+    suspend fun broadcastToFirebase(record: SyncRecord): Boolean {
+        if (!hasInternet()) return false
+
+        val uid = authSource.uid ?: return false
 
         try {
             val ref = database.reference
@@ -159,14 +172,17 @@ class FirebasePlugin @Inject constructor(
                 "lamportClock" to record.lamportClock,
                 "timestamp" to record.timestamp,
                 "type" to record.type.name,
+                FIREBASE_UID_FIELD to uid,
                 "payload" to android.util.Base64.encodeToString(record.payload, android.util.Base64.NO_WRAP),
                 "signature" to android.util.Base64.encodeToString(record.signature, android.util.Base64.NO_WRAP)
             )
 
             ref.setValue(data).await()
             Log.d(TAG, "Pushed ${record.type} record ${record.id} to RTDB")
+            return true
         } catch (e: Exception) {
             Log.e(TAG, "Failed to push record ${record.id}", e)
+            return false
         }
     }
 
@@ -175,17 +191,17 @@ class FirebasePlugin @Inject constructor(
     private fun attachListener(squadId: String) {
         if (activeListeners.containsKey(squadId)) return
 
-        val ref = database.reference
+        val query = database.reference
             .child(SQUADS_REF)
             .child(squadId)
             .child(RECORDS_REF)
+            .orderByChild(TIMESTAMP_FIELD)
+            .startAt((System.currentTimeMillis() - RECORD_WINDOW_MS).toDouble())
+            .limitToLast(MAX_RECENT_RECORDS)
 
         val listener = object : ChildEventListener {
             override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
                 val record = snapshotToRecord(snapshot) ?: return
-                // Don't emit our own records back — dedup handles it but
-                // we can skip the work here
-                if (record.authorId == authSource.uid) return
                 _receivedMessages.tryEmit(record)
             }
 
@@ -198,19 +214,55 @@ class FirebasePlugin @Inject constructor(
             }
         }
 
-        ref.addChildEventListener(listener)
-        activeListeners[squadId] = listener
+        query.addChildEventListener(listener)
+        activeListeners[squadId] = ListenerHandle(query = query, listener = listener)
         Log.d(TAG, "Attached listener for squad $squadId")
     }
 
     private fun detachListener(squadId: String) {
-        val listener = activeListeners.remove(squadId) ?: return
+        val handle = activeListeners.remove(squadId) ?: return
+        handle.query.removeEventListener(handle.listener)
+        Log.d(TAG, "Detached listener for squad $squadId")
+    }
+
+    private suspend fun ensureMembership(squadId: String) {
+        val uid = authSource.uid ?: return
         database.reference
             .child(SQUADS_REF)
             .child(squadId)
-            .child(RECORDS_REF)
-            .removeEventListener(listener)
-        Log.d(TAG, "Detached listener for squad $squadId")
+            .child(MEMBERS_REF)
+            .child(uid)
+            .setValue(true)
+            .await()
+    }
+
+    private fun ensureMembershipAsync(squadId: String, onSuccess: (() -> Unit)? = null) {
+        val uid = authSource.uid ?: return
+        database.reference
+            .child(SQUADS_REF)
+            .child(squadId)
+            .child(MEMBERS_REF)
+            .child(uid)
+            .setValue(true)
+            .addOnSuccessListener {
+                onSuccess?.invoke()
+            }
+            .addOnFailureListener { error ->
+                Log.w(TAG, "Failed to register Firebase membership for $squadId", error)
+            }
+    }
+
+    private fun removeMembershipAsync(squadId: String) {
+        val uid = authSource.uid ?: return
+        database.reference
+            .child(SQUADS_REF)
+            .child(squadId)
+            .child(MEMBERS_REF)
+            .child(uid)
+            .removeValue()
+            .addOnFailureListener { error ->
+                Log.w(TAG, "Failed to remove Firebase membership for $squadId", error)
+            }
     }
 
     private fun snapshotToRecord(snapshot: DataSnapshot): SyncRecord? {

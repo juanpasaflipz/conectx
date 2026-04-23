@@ -10,6 +10,12 @@
     <string name="nav_settings">Ajustes</string>
     <string name="nav_back">Atras</string>
 
+    <!-- Bottom Nav Tabs -->
+    <string name="nav_tab_squads">Squads</string>
+    <string name="nav_tab_calendario">Calendario</string>
+    <string name="nav_tab_estadio">Estadio</string>
+    <string name="nav_tab_mas">Mas</string>
+
     <!-- Activation -->
     <string name="activation_title">Ingresa tu codigo de activacion</string>
     <string name="activation_subtitle">Conecta con tus amigos en el estadio.\nSolo necesitas un email.</string>
@@ -38,8 +44,18 @@
     <string name="squads_join_title">Unirse a un Squad</string>
     <string name="squads_join_code_hint">Codigo (ej. AZT-7K3)</string>
     <string name="squads_join_button">Unirse</string>
-    <string name="squads_join_error">Squad no encontrado. Asegurate de que un miembro del squad este cerca.</string>
+    <string name="squads_join_error">Squad no encontrado. Revisa el codigo o pide a alguien del squad que vuelva a compartirlo.</string>
     <string name="squads_copy_code">Codigo copiado</string>
+    <string name="squads_copy_code_button">Copiar codigo</string>
+    <string name="squads_share_code">Compartir codigo</string>
+    <string name="squads_show_code">Ver codigo</string>
+    <string name="squads_code_label">Codigo para unirse</string>
+    <string name="squads_show_code_title">Invitar al squad %1$s</string>
+    <string name="squads_share_hint">Comparte este codigo o pegalo en un chat para que tu grupo se una rapido.</string>
+    <string name="squads_share_message">Unete a mi squad \"%1$s\" en Conectx con este codigo: %2$s</string>
+    <string name="squads_qr_code">Codigo QR del squad</string>
+    <string name="squads_qr_hint_title">Escanealo con cualquier camara</string>
+    <string name="squads_qr_hint_body">La camara mostrara el codigo. Si no lo copia sola, tambien puedes escribirlo abajo.</string>
 
     <!-- Chat -->
     <string name="chat_empty">Aun no hay mensajes.\nEscribe algo para empezar.</string>
@@ -47,6 +63,26 @@
     <string name="chat_send">Enviar</string>
     <string name="chat_mesh_connected">%d conectado(s)</string>
     <string name="chat_mesh_disconnected">Sin conexion</string>
+    <string name="chat_checkin">Estoy aqui</string>
+
+    <!-- Reactions -->
+    <string name="reaction_goal">Gol</string>
+    <string name="reaction_foul">Falta</string>
+    <string name="reaction_red_card">Roja</string>
+    <string name="reaction_save">Atajada</string>
+    <string name="reaction_celebration">Festejo</string>
+    <string name="reaction_boo">Abucheo</string>
+
+    <!-- Meetup -->
+    <string name="meetup_title">Punto de Encuentro</string>
+    <string name="meetup_current">Punto actual</string>
+    <string name="meetup_set_point">Establecer punto de encuentro</string>
+    <string name="meetup_label_hint">Lugar</string>
+    <string name="meetup_label_placeholder">ej. Puerta 3, junto a los tacos</string>
+    <string name="meetup_description_hint">Descripcion (opcional)</string>
+    <string name="meetup_description_placeholder">ej. Busquen la bandera de Mexico</string>
+    <string name="meetup_save">Compartir punto de encuentro</string>
+    <string name="meetup_updated_by">Actualizado por %1$s a las %2$s</string>
 
     <!-- Location -->
     <string name="location_title">Ubicacion</string>
@@ -68,6 +104,57 @@
     <string name="location_row_short">Fila %s</string>
     <string name="location_seat_short">Asiento %s</string>
 
+    <!-- Schedule -->
+    <string name="schedule_title">Calendario</string>
+    <string name="schedule_next_match">Proximo partido</string>
+    <string name="schedule_countdown">Faltan %1$d dias, %2$d horas</string>
+    <string name="schedule_no_matches">No hay partidos en esta etapa</string>
+    <string name="schedule_group">Grupo %s</string>
+    <string name="stage_groups">Grupos</string>
+    <string name="stage_round16">Octavos</string>
+    <string name="stage_quarters">Cuartos</string>
+    <string name="stage_semis">Semis</string>
+    <string name="stage_final">Final</string>
+
+    <!-- Stadium -->
+    <string name="stadium_title">Estadios</string>
+    <string name="stadium_capacity">Capacidad: %,d</string>
+    <string name="stadium_transport">Como llegar</string>
+    <string name="stadium_gates">Puertas de acceso</string>
+    <string name="stadium_bathrooms">Banos</string>
+    <string name="stadium_food">Comida y bebida</string>
+    <string name="stadium_first_aid">Primeros auxilios</string>
+    <string name="stadium_atms">Cajeros</string>
+
+    <!-- Transport -->
+    <string name="transport_title">Transporte</string>
+    <string name="transport_no_info">Info de transporte no disponible</string>
+
+    <!-- More -->
+    <string name="more_title">Mas</string>
+    <string name="more_privacy">Privacidad</string>
+    <string name="more_mesh_stats">Estado del Mesh</string>
+    <string name="more_battery_saver">Ahorro de bateria</string>
+    <string name="more_upgrade">Mejorar plan</string>
+
+    <!-- Privacy Dashboard -->
+    <string name="privacy_title">Privacidad</string>
+    <string name="privacy_no_data_sent">Conectx no envia datos a ningun servidor. Todos tus mensajes, ubicaciones y datos de squad se quedan en tu dispositivo y se comparten solo con tus amigos via mesh.</string>
+    <string name="privacy_local_data">Datos locales en tu dispositivo</string>
+    <string name="privacy_squads">Squads</string>
+    <string name="privacy_sync_records">Squads con registros sync</string>
+    <string name="privacy_clear_all">Borrar todos los datos</string>
+    <string name="privacy_clear_confirm_title">Borrar datos</string>
+    <string name="privacy_clear_confirm_message">Se borraran todos tus mensajes, squads y datos de sync. Esta accion no se puede deshacer.</string>
+    <string name="privacy_clear_confirm">Borrar todo</string>
+
+    <!-- Mesh Stats -->
+    <string name="mesh_stats_title">Estado del Mesh</string>
+    <string name="mesh_stats_peers">Dispositivos conectados</string>
+    <string name="mesh_stats_relayed">Mensajes retransmitidos</string>
+    <string name="mesh_stats_connected_list">Peers conectados</string>
+    <string name="mesh_stats_no_peers">No hay dispositivos conectados al mesh</string>
+
     <!-- Settings -->
     <string name="settings_title">Ajustes</string>
     <string name="settings_account">Cuenta</string>
@@ -81,6 +168,10 @@
     <string name="settings_about">Acerca de</string>
     <string name="settings_version">Version</string>
     <string name="settings_privacy">Conectx no recopila datos personales.\nNo necesitamos tu numero de telefono, ni tu ubicacion GPS, ni tu CURP.</string>
+    <string name="settings_theme">Apariencia</string>
+    <string name="settings_theme_system">Sistema</string>
+    <string name="settings_theme_light">Claro</string>
+    <string name="settings_theme_dark">Oscuro</string>
     <string name="settings_sign_out">Cerrar sesion</string>
 
     <!-- Notifications -->
@@ -123,6 +214,24 @@
     <string name="conversations_wifi_aware_off">WiFi Aware no disponible</string>
     <string name="conversations_no_session">Aun no hay sesion segura con este contacto</string>
     <string name="direct_chat_encrypted">Cifrado de extremo a extremo</string>
+
+    <!-- Prominent Disclosure (Google Play requirement — shown before permission requests) -->
+    <string name="disclosure_title">Antes de empezar</string>
+    <string name="disclosure_intro">Conectx usa conexiones entre dispositivos para que puedas chatear con tus amigos en el estadio, incluso sin internet. Para esto necesitamos los siguientes permisos:</string>
+    <string name="disclosure_bt_wifi_title">Bluetooth y WiFi</string>
+    <string name="disclosure_bt_wifi_body">Usamos Bluetooth y WiFi para crear una red directa entre los telefonos de tu grupo. Asi pueden enviarse mensajes y compartir ubicacion dentro del estadio sin datos moviles.</string>
+    <string name="disclosure_location_title">Ubicacion</string>
+    <string name="disclosure_location_body">Android requiere el permiso de ubicacion para descubrir dispositivos cercanos via Bluetooth. Conectx NO rastrea tu ubicacion GPS ni la comparte con nadie.</string>
+    <string name="disclosure_data_title">Mensajes y datos</string>
+    <string name="disclosure_data_body">Tus mensajes se guardan solo en tu dispositivo y se envian directamente a los dispositivos de tu grupo. No pasan por ningun servidor.</string>
+    <string name="disclosure_privacy_link">Lee nuestra politica de privacidad completa</string>
+    <string name="disclosure_accept">Entendido</string>
+
+    <!-- Privacy Policy -->
+    <string name="privacy_policy_url" translatable="false">https://www.conectx.app/privacidad</string>
+    <string name="privacy_policy_link">Politica de privacidad</string>
+    <string name="settings_rate_app">Calificar Conectx</string>
+    <string name="play_store_url" translatable="false">https://play.google.com/store/apps/details?id=app.conectx</string>
 
     <!-- Common -->
     <string name="cancel">Cancelar</string>

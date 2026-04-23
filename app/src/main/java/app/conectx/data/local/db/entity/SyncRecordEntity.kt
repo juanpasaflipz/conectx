@@ -12,7 +12,8 @@ data class SyncRecordEntity(
     val timestamp: Long,
     val type: String,
     val payload: ByteArray,
-    val signature: ByteArray
+    val signature: ByteArray,
+    val firebaseSyncedAt: Long? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

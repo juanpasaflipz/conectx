@@ -5,5 +5,7 @@ enum class RecordType {
     LOCATION,
     PING,
     SQUAD_META,
-    SYNC_OFFER
+    SYNC_OFFER,
+    REACTION,
+    MEETUP
 }

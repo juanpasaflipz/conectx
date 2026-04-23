@@ -1,7 +1,6 @@
 package app.conectx.sync
 
 import android.util.Log
-import app.conectx.crypto.SignalSessionManager
 import app.conectx.data.local.db.dao.SyncRecordDao
 import app.conectx.data.local.db.entity.SyncRecordEntity
 import app.conectx.domain.model.Peer
@@ -25,8 +24,7 @@ class SyncSession(
     private val lamportClock: LamportClock,
     private val syncRecordDao: SyncRecordDao,
     private val transportManager: TransportManager,
-    private val localUserId: String,
-    private val signalManager: SignalSessionManager? = null
+    private val localUserId: String
 ) {
     companion object {
         private const val TAG = "SyncSession"
@@ -44,8 +42,6 @@ class SyncSession(
             return
         }
 
-        val publicKey = signalManager?.getIdentityPublicKey() ?: ByteArray(0)
-
         val offer = SyncRecord(
             id = UUID.randomUUID().toString(),
             squadId = "_sync",       // special: not tied to one squad
@@ -53,12 +49,12 @@ class SyncSession(
             lamportClock = 0,        // not meaningful for offers
             timestamp = System.currentTimeMillis(),
             type = RecordType.SYNC_OFFER,
-            payload = PayloadCodec.encodeSyncOffer(squadClocks, publicKey),
-            signature = ByteArray(0) // SYNC_OFFER itself doesn't need signing
+            payload = PayloadCodec.encodeSyncOffer(squadClocks),
+            signature = ByteArray(0)
         )
 
         transportManager.send(offer)
-        Log.d(TAG, "Sent SYNC_OFFER to mesh (${squadClocks.size} squads, pubkey=${publicKey.size}B) for ${peer.displayName}")
+        Log.d(TAG, "Sent SYNC_OFFER to mesh (${squadClocks.size} squads) for ${peer.displayName}")
     }
 
     /**

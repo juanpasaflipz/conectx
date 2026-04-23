@@ -14,7 +14,6 @@ import android.os.PowerManager
 import android.util.Log
 import app.conectx.MainActivity
 import app.conectx.R
-import app.conectx.crypto.SignalSessionManager
 import app.conectx.sync.SyncEngine
 import app.conectx.transport.TransportManager
 import app.conectx.transport.nearby.PeerTracker
@@ -59,7 +58,6 @@ class MeshService : Service() {
     @Inject lateinit var transportManager: TransportManager
     @Inject lateinit var syncEngine: SyncEngine
     @Inject lateinit var peerTracker: PeerTracker
-    @Inject lateinit var signalSessionManager: SignalSessionManager
 
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private var wakeLock: PowerManager.WakeLock? = null
@@ -101,8 +99,6 @@ class MeshService : Service() {
 
         serviceScope.launch {
             try {
-                signalSessionManager.initialize()
-                Log.d(TAG, "Signal Protocol initialized")
                 transportManager.startAll()
                 syncEngine.start()
                 Log.d(TAG, "Transport + sync engine started")

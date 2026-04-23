@@ -13,10 +13,6 @@ interface SyncRecordDao {
     @Query("SELECT * FROM sync_records WHERE squadId = :squadId ORDER BY lamportClock ASC")
     suspend fun getRecordsForSquad(squadId: String): List<SyncRecordEntity>
 
-    /** Reactive stream of LOCATION records for a squad — UI auto-updates on new pings. */
-    @Query("SELECT * FROM sync_records WHERE squadId = :squadId AND type = 'LOCATION' ORDER BY lamportClock DESC")
-    fun getLocationPingsForSquad(squadId: String): Flow<List<SyncRecordEntity>>
-
     @Query("SELECT * FROM sync_records WHERE squadId = :squadId AND lamportClock > :afterClock ORDER BY lamportClock ASC")
     suspend fun getRecordsAfter(squadId: String, afterClock: Long): List<SyncRecordEntity>
 

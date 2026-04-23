@@ -1,7 +1,5 @@
 package app.conectx.sync
 
-import app.conectx.domain.model.LocationPing
-import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -35,48 +33,6 @@ class PayloadCodecTest {
 
         assertEquals("User", decoded.authorName)
         assertEquals("", decoded.text)
-    }
-
-    // ── LOCATION ──────────────────────────────────────────────────────
-
-    @Test
-    fun `location round-trip with all fields`() {
-        val ping = LocationPing(
-            section = "214",
-            row = "F",
-            seat = "23",
-            note = "Near the beer stand",
-            battery = 72
-        )
-        val encoded = PayloadCodec.encodeLocation("Maria", ping)
-        val decoded = PayloadCodec.decodeLocation(encoded)
-
-        assertEquals("Maria", decoded.authorName)
-        assertEquals("214", decoded.ping.section)
-        assertEquals("F", decoded.ping.row)
-        assertEquals("23", decoded.ping.seat)
-        assertEquals("Near the beer stand", decoded.ping.note)
-        assertEquals(72, decoded.ping.battery)
-    }
-
-    @Test
-    fun `location round-trip with nullable fields null`() {
-        val ping = LocationPing(
-            section = "105",
-            row = null,
-            seat = null,
-            note = null,
-            battery = 15
-        )
-        val encoded = PayloadCodec.encodeLocation("Pedro", ping)
-        val decoded = PayloadCodec.decodeLocation(encoded)
-
-        assertEquals("Pedro", decoded.authorName)
-        assertEquals("105", decoded.ping.section)
-        assertEquals(null, decoded.ping.row)
-        assertEquals(null, decoded.ping.seat)
-        assertEquals(null, decoded.ping.note)
-        assertEquals(15, decoded.ping.battery)
     }
 
     // ── SQUAD_META ────────────────────────────────────────────────────
@@ -136,7 +92,6 @@ class PayloadCodecTest {
         val decoded = PayloadCodec.decodeSyncOffer(encoded)
 
         assertTrue(decoded.squadClocks.isEmpty())
-        assertEquals(0, decoded.publicKey.size)
     }
 
     @Test
@@ -149,26 +104,5 @@ class PayloadCodecTest {
         assertEquals(5L, decoded.squadClocks["squad-1"])
         assertEquals(12L, decoded.squadClocks["squad-2"])
         assertEquals(0L, decoded.squadClocks["squad-3"])
-    }
-
-    @Test
-    fun `syncOffer round-trip with public key`() {
-        val clocks = mapOf("squad-1" to 10L)
-        val fakeKey = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8)
-        val encoded = PayloadCodec.encodeSyncOffer(clocks, fakeKey)
-        val decoded = PayloadCodec.decodeSyncOffer(encoded)
-
-        assertEquals(10L, decoded.squadClocks["squad-1"])
-        assertArrayEquals(fakeKey, decoded.publicKey)
-    }
-
-    @Test
-    fun `syncOffer round-trip with empty public key`() {
-        val clocks = mapOf("squad-1" to 3L)
-        val encoded = PayloadCodec.encodeSyncOffer(clocks, ByteArray(0))
-        val decoded = PayloadCodec.decodeSyncOffer(encoded)
-
-        assertEquals(3L, decoded.squadClocks["squad-1"])
-        assertEquals(0, decoded.publicKey.size)
     }
 }

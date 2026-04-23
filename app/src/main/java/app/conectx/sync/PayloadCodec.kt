@@ -1,6 +1,5 @@
 package app.conectx.sync
 
-import app.conectx.domain.model.LocationPing
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
@@ -36,65 +35,17 @@ object PayloadCodec {
         }
     }
 
-    // ── LOCATION ──────────────────────────────────────────────────────
-    // Includes authorName so the UI can display who shared the location
-    // without needing to join against another table.
-
-    data class LocationPayload(val authorName: String, val ping: LocationPing)
-
-    fun encodeLocation(authorName: String, ping: LocationPing): ByteArray {
-        val baos = ByteArrayOutputStream()
-        DataOutputStream(baos).use { out ->
-            out.writeUTF(authorName)
-            out.writeUTF(ping.section)
-            out.writeUTF(ping.row ?: "")
-            out.writeUTF(ping.seat ?: "")
-            out.writeUTF(ping.note ?: "")
-            out.writeInt(ping.battery)
-        }
-        return baos.toByteArray()
-    }
-
-    fun decodeLocation(bytes: ByteArray): LocationPayload {
-        DataInputStream(ByteArrayInputStream(bytes)).use { input ->
-            return LocationPayload(
-                authorName = input.readUTF(),
-                ping = LocationPing(
-                    section = input.readUTF(),
-                    row = input.readUTF().ifEmpty { null },
-                    seat = input.readUTF().ifEmpty { null },
-                    note = input.readUTF().ifEmpty { null },
-                    battery = input.readInt()
-                )
-            )
-        }
-    }
-
     // ── SYNC_OFFER ────────────────────────────────────────────────────
 
-    data class SyncOfferPayload(
-        val squadClocks: Map<String, Long>,
-        val publicKey: ByteArray
-    ) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is SyncOfferPayload) return false
-            return squadClocks == other.squadClocks && publicKey.contentEquals(other.publicKey)
-        }
-        override fun hashCode(): Int = squadClocks.hashCode() * 31 + publicKey.contentHashCode()
-    }
+    data class SyncOfferPayload(val squadClocks: Map<String, Long>)
 
-    fun encodeSyncOffer(squadClocks: Map<String, Long>, publicKey: ByteArray = ByteArray(0)): ByteArray {
+    fun encodeSyncOffer(squadClocks: Map<String, Long>): ByteArray {
         val baos = ByteArrayOutputStream()
         DataOutputStream(baos).use { out ->
             out.writeInt(squadClocks.size)
             for ((squadId, clock) in squadClocks) {
                 out.writeUTF(squadId)
                 out.writeLong(clock)
-            }
-            out.writeInt(publicKey.size)
-            if (publicKey.isNotEmpty()) {
-                out.write(publicKey)
             }
         }
         return baos.toByteArray()
@@ -109,16 +60,8 @@ object PayloadCodec {
                 val clock = input.readLong()
                 squadClocks[squadId] = clock
             }
-            // Read public key — backward compatible with old format (no key)
-            val publicKey = if (input.available() > 0) {
-                val keySize = input.readInt()
-                if (keySize > 0) ByteArray(keySize).also { input.readFully(it) }
-                else ByteArray(0)
-            } else {
-                ByteArray(0)
-            }
-            return SyncOfferPayload(squadClocks, publicKey)
         }
+        return SyncOfferPayload(squadClocks)
     }
 
     // ── SQUAD_META ────────────────────────────────────────────────────
@@ -152,77 +95,6 @@ object PayloadCodec {
                 squadName = input.readUTF(),
                 inviteCode = input.readUTF(),
                 memberName = input.readUTF()
-            )
-        }
-    }
-
-    // ── REACTION ─────────────────────────────────────────────────────
-    // Lightweight emoji reactions that propagate through mesh as system messages.
-
-    data class ReactionPayload(val authorName: String, val reactionType: String)
-
-    fun encodeReaction(authorName: String, reactionType: String): ByteArray {
-        val baos = ByteArrayOutputStream()
-        DataOutputStream(baos).use { out ->
-            out.writeUTF(authorName)
-            out.writeUTF(reactionType)
-        }
-        return baos.toByteArray()
-    }
-
-    fun decodeReaction(bytes: ByteArray): ReactionPayload {
-        DataInputStream(ByteArrayInputStream(bytes)).use { input ->
-            return ReactionPayload(
-                authorName = input.readUTF(),
-                reactionType = input.readUTF()
-            )
-        }
-    }
-
-    // ── CHECK-IN (PING) ─────────────────────────────────────────────
-    // One-tap "Estoy aqui" — renders as system message in chat.
-
-    data class CheckInPayload(val authorName: String)
-
-    fun encodeCheckIn(authorName: String): ByteArray {
-        val baos = ByteArrayOutputStream()
-        DataOutputStream(baos).use { out ->
-            out.writeUTF(authorName)
-        }
-        return baos.toByteArray()
-    }
-
-    fun decodeCheckIn(bytes: ByteArray): CheckInPayload {
-        DataInputStream(ByteArrayInputStream(bytes)).use { input ->
-            return CheckInPayload(authorName = input.readUTF())
-        }
-    }
-
-    // ── MEETUP ──────────────────────────────────────────────────────
-    // Emergency meetup point — one per squad, any member can update.
-
-    data class MeetupPayload(
-        val label: String,
-        val description: String,
-        val updatedBy: String
-    )
-
-    fun encodeMeetup(label: String, description: String, updatedBy: String): ByteArray {
-        val baos = ByteArrayOutputStream()
-        DataOutputStream(baos).use { out ->
-            out.writeUTF(label)
-            out.writeUTF(description)
-            out.writeUTF(updatedBy)
-        }
-        return baos.toByteArray()
-    }
-
-    fun decodeMeetup(bytes: ByteArray): MeetupPayload {
-        DataInputStream(ByteArrayInputStream(bytes)).use { input ->
-            return MeetupPayload(
-                label = input.readUTF(),
-                description = input.readUTF(),
-                updatedBy = input.readUTF()
             )
         }
     }

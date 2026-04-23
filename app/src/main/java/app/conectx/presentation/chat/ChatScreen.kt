@@ -24,9 +24,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.PinDrop
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -66,8 +63,6 @@ import java.util.Locale
 @Composable
 fun ChatScreen(
     squadId: String,
-    onLocationClick: () -> Unit,
-    onMeetupClick: () -> Unit,
     onBack: () -> Unit,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
@@ -90,20 +85,6 @@ fun ChatScreen(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.nav_back))
-                    }
-                },
-                actions = {
-                    // Check-in button
-                    IconButton(onClick = { viewModel.sendCheckIn() }) {
-                        Icon(Icons.Default.CheckCircle, contentDescription = stringResource(R.string.chat_checkin))
-                    }
-                    // Meetup point
-                    IconButton(onClick = onMeetupClick) {
-                        Icon(Icons.Default.PinDrop, contentDescription = stringResource(R.string.meetup_title))
-                    }
-                    // Location
-                    IconButton(onClick = onLocationClick) {
-                        Icon(Icons.Default.LocationOn, contentDescription = stringResource(R.string.nav_location))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -130,9 +111,6 @@ fun ChatScreen(
                 localUserId = viewModel.localUserId,
                 modifier = Modifier.weight(1f)
             )
-
-            // Reaction bar
-            ReactionBar(onReaction = { viewModel.sendReaction(it) })
 
             // Input bar
             ChatInput(onSend = { viewModel.sendMessage(it) })
@@ -188,38 +166,21 @@ private fun MessageList(
 
             val reversed = messages.reversed()
             items(reversed, key = { it.id }) { message ->
-                if (message.isSystem) {
-                    SystemMessage(message)
-                } else {
-                    val isOwn = message.authorId == localUserId
-                    val idx = reversed.indexOf(message)
-                    val prevAuthor = reversed.getOrNull(idx + 1)?.authorId
-                    val showAuthor = !isOwn && message.authorId != prevAuthor
+                val isOwn = message.authorId == localUserId
+                val idx = reversed.indexOf(message)
+                val prevAuthor = reversed.getOrNull(idx + 1)?.authorId
+                val showAuthor = !isOwn && message.authorId != prevAuthor
 
-                    MessageBubble(
-                        message = message,
-                        isOwn = isOwn,
-                        showAuthorName = showAuthor
-                    )
-                }
+                MessageBubble(
+                    message = message,
+                    isOwn = isOwn,
+                    showAuthorName = showAuthor
+                )
             }
 
             item { Spacer(modifier = Modifier.height(4.dp)) }
         }
     }
-}
-
-@Composable
-private fun SystemMessage(message: Message) {
-    Text(
-        text = message.text,
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-        textAlign = TextAlign.Center,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    )
 }
 
 @Composable

@@ -1,19 +1,15 @@
 [versions]
 agp = "8.13.2"
-kotlin = "1.9.22"
-ksp = "1.9.22-1.0.17"
-compose-bom = "2024.02.00"
-compose-compiler = "1.5.10"
-hilt = "2.50"
+kotlin = "2.0.21"
+ksp = "2.0.21-1.0.25"
+compose-bom = "2024.12.01"
+hilt = "2.52"
 hilt-navigation-compose = "1.1.0"
 room = "2.6.1"
 nearby = "19.1.0"
 firebase-bom = "32.7.0"
 google-services = "4.4.0"
 crashlytics-plugin = "2.9.9"
-protobuf = "3.25.0"
-protobuf-plugin = "0.9.4"
-libsignal = "0.86.5"
 datastore = "1.0.0"
 work = "2.9.0"
 lifecycle = "2.7.0"
@@ -77,12 +73,6 @@ firebase-database = { group = "com.google.firebase", name = "firebase-database-k
 firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging-ktx" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics-ktx" }
 
-# Protobuf
-protobuf-javalite = { group = "com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }
-
-# Crypto — Signal Protocol (replaces Tink)
-libsignal-android = { group = "org.signal", name = "libsignal-android", version.ref = "libsignal" }
-
 # QR codes
 zxing-core = { group = "com.google.zxing", name = "core", version.ref = "zxing" }
 
@@ -96,8 +86,8 @@ espresso-core = { group = "androidx.test.espresso", name = "espresso-core", vers
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics-plugin" }
-protobuf = { id = "com.google.protobuf", version.ref = "protobuf-plugin" }

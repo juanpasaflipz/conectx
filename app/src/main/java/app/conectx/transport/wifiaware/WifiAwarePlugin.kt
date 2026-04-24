@@ -1,5 +1,6 @@
 package app.conectx.transport.wifiaware
 
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -54,6 +55,7 @@ import javax.inject.Singleton
  * hardware support — check [isAvailable] before relying on this transport.
  */
 @Singleton
+@SuppressLint("MissingPermission") // Permissions checked at the UI layer before start()
 class WifiAwarePlugin @Inject constructor(
     @ApplicationContext private val context: Context
 ) : TransportPlugin {
